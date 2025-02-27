@@ -30,6 +30,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     implementation("io.jsonwebtoken:jjwt-gson:0.12.6")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
