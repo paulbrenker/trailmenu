@@ -17,7 +17,7 @@ fi
 STAGED_FILES=\$(git diff --staged --name-only --diff-filter=ACMRTUXB | grep ".kt")
 
 if [ -z "\$STAGED_FILES" ]; then
-  echo "Commit without changed Kotlin files"
+  echo "No changed Kotlin files"
   exit 0
 fi
 
