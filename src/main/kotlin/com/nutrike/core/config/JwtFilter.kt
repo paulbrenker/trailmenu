@@ -1,8 +1,8 @@
 package com.nutrike.core.config
 
-import com.nutrike.core.config.AuthentificationConfig.Companion.AUTHENTICATION_EXCLUDE
-import com.nutrike.core.config.AuthentificationConfig.Companion.AUTHENTICATION_HEADER
-import com.nutrike.core.config.AuthentificationConfig.Companion.TOKEN_PREFIX
+import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_EXCLUDE
+import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_HEADER
+import com.nutrike.core.config.AuthenticationConfig.Companion.TOKEN_PREFIX
 import com.nutrike.core.util.JwtUtil
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest

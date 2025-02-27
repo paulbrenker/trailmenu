@@ -15,8 +15,10 @@ class SecurityConfigTest {
     private lateinit var mockMvc: MockMvc
 
     @Test
-    fun `should allow access to public endpoints`() {
-        // TODO: Implement this later as /auth endpoint returns also unauthorized
+    fun `should allow access to a public endpoint`() {
+        mockMvc
+            .get("/actuator")
+            .andExpect { status { isOk() } }
     }
 
     /* TODO: Fix flaky test
@@ -30,9 +32,9 @@ class SecurityConfigTest {
 
     @Test
     @WithMockUser(username = "testuser", roles = ["USER"])
-    fun `should not return 401 for authenticated users`() {
+    fun `should be ok for authenticated users`() {
         mockMvc
-            .get("/not-existent-endpoint")
-            .andExpect { status { isNotFound() } }
+            .get("/hello-world")
+            .andExpect { status { isOk() } }
     }
 }
