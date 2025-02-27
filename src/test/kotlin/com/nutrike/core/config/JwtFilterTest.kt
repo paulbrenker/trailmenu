@@ -38,7 +38,9 @@ class JwtFilterTest {
         val mockRequest = mockk<HttpServletRequest>()
         every { mockRequest.requestURI } returns "/auth"
 
-        assertTrue(jwtFilter.shouldNotFilter(mockRequest))
+        assertTrue(
+            jwtFilter.shouldNotFilter(mockRequest),
+        )
     }
 
     private fun invalidAuthProvider(): Stream<Arguments> {
