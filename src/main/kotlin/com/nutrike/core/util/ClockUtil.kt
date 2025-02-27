@@ -1,6 +1,6 @@
 package com.nutrike.core.util
 
-import com.nutrike.core.config.AuthentificationConfig.Companion.TOKEN_EXPIRATION_TIME
+import com.nutrike.core.config.AuthenticationConfig.Companion.TOKEN_EXPIRATION_TIME
 
 class ClockUtil {
     companion object {

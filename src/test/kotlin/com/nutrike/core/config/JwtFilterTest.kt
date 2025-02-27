@@ -1,6 +1,6 @@
 package com.nutrike.core.config
 
-import com.nutrike.core.config.AuthentificationConfig.Companion.AUTHENTICATION_HEADER
+import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_HEADER
 import com.nutrike.core.util.JwtUtil
 import io.mockk.every
 import io.mockk.mockk

@@ -1,6 +1,6 @@
 package com.nutrike.core.config
 
-import com.nutrike.core.config.AuthentificationConfig.Companion.AUTHENTICATION_EXCLUDE
+import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_EXCLUDE
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
