@@ -21,8 +21,9 @@ if [ -z "\$STAGED_FILES" ]; then
   exit 0
 fi
 
+# -PinternalKtlintGitFilter=\$STAGED_FILES this flag might be used for better checks
 echo "Run Ktlint check"
-./gradlew --quiet ktlintCheck -PinternalKtlintGitFilter=\$STAGED_FILES
+./gradlew --quiet ktlintCheck
 EXIT_CODE=\$?
 
 if [ \$EXIT_CODE -ne 0 ]; then
