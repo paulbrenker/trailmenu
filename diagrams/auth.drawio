@@ -1,6 +1,6 @@
-<mxfile host="drawio-plugin" modified="2025-02-28T10:00:41.990Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" version="22.1.22" etag="zirQbdukugapgvt_19GN" type="embed">
+<mxfile host="drawio-plugin" modified="2025-02-28T14:15:52.721Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" version="22.1.22" etag="J0QX6hD9vOMoF099gAA6" type="embed">
   <diagram id="pukihjkxkZI3d-NsAk1i" name="Page-1">
-    <mxGraphModel dx="1672" dy="1365" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1829" dy="989" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -10,16 +10,16 @@
         <mxCell id="2" value="&lt;u&gt;ext:UI&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
           <mxGeometry x="60" y="170" width="100" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="4" value="&lt;u&gt;authR: AuthenticationRequestDTO&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="4" value="&lt;u&gt;authR: AuthenticationRequestDTO&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="140" y="240" width="180" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="6" value="&lt;u&gt;ctrl:AuthController&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="6" value="&lt;u&gt;ctrl:AuthController&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
           <mxGeometry x="300" y="170" width="100" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="8" value="&lt;u&gt;serv:AuthService&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="8" value="&lt;u&gt;serv:AuthService&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
           <mxGeometry x="520" y="170" width="100" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="9" value="&lt;u&gt;repo:UserRepository&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="9" value="&lt;u&gt;repo:UserRepository&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
           <mxGeometry x="670" y="170" width="110" height="40" as="geometry" />
         </mxCell>
         <mxCell id="11" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="18" target="2">
@@ -103,10 +103,10 @@
         <mxCell id="27" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="565" y="410" width="10" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="29" value="&lt;u&gt;authR: AuthenticationResponseDTO&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="29" value="&lt;u&gt;authR: AuthenticationResponseDTO&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
           <mxGeometry x="370" y="450" width="180" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="30" value="&lt;u&gt;ctrl:JwtUtility&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="30" value="&lt;u&gt;util:JwtUtility&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
           <mxGeometry x="820" y="170" width="110" height="40" as="geometry" />
         </mxCell>
         <mxCell id="31" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="33" target="30">
@@ -124,7 +124,7 @@
         <mxCell id="33" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="870" y="440" width="10" height="30" as="geometry" />
         </mxCell>
-        <mxCell id="34" value="&lt;u&gt;ctrl:**Controller&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="34" value="&lt;u&gt;ctrlx:**Controller&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
           <mxGeometry x="1120" y="170" width="110" height="40" as="geometry" />
         </mxCell>
         <mxCell id="35" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="34">
@@ -139,7 +139,7 @@
             <mxPoint x="1175" y="370" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="38" value="&lt;u&gt;ctrl:JwtFilter&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="38" value="&lt;u&gt;filter:JwtFilter&lt;/u&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
           <mxGeometry x="970" y="170" width="110" height="40" as="geometry" />
         </mxCell>
         <mxCell id="39" value="" style="endArrow=none;dashed=1;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" target="38">
