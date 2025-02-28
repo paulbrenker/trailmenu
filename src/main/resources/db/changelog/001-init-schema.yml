@@ -1,0 +1,65 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-init
+      author: paul brenker
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: type
+                  type: VARCHAR(50)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    unique: true
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: UUID
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+                    defaultValueComputed: uuid_generate_v4()
+              - column:
+                  name: username
+                  type: VARCHAR(150)
+                  constraints:
+                    nullable: false
+                    unique: true
+              - column:
+                  name: password
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: approval
+                  type: BOOLEAN
+                  constraints:
+                    nullable: false
+                    defaultValueBoolean: false
+        - createTable:
+            tableName: users_roles
+            columns:
+              - column:
+                  name: user_id
+                  type: UUID
+                  constraints:
+                    foreignKeyName: fk_user_id
+                    nullable: false
+                    references: users(id)
+              - column:
+                  name: role
+                  type: VARCHAR(50)
+                  constraints:
+                    foreignKeyName: fk_role_type
+                    nullable: false
+                    references: role(type)
+
+        - addUniqueConstraint:
+            tableName: users_roles
+            columnNames: user_id, role
+
+
