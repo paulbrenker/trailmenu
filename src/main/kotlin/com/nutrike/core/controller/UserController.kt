@@ -3,7 +3,6 @@ package com.nutrike.core.controller
 import com.nutrike.core.dto.AuthRequestDto
 import com.nutrike.core.dto.AuthResponseDto
 import com.nutrike.core.service.UserService
-import com.nutrike.core.util.JwtUtil
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,9 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @Tag(name = "Authentication", description = "User authentication")
 @RequestMapping("/user")
-class UserController(
-    private val jwtUtil: JwtUtil,
-) {
+class UserController {
     @Autowired
     private lateinit var service: UserService
 
