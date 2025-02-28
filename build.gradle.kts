@@ -32,12 +32,14 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-gson:0.12.6")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     implementation("org.postgresql:postgresql:42.7.5")
+    implementation("org.testcontainers:junit-jupiter:1.20.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     testImplementation("io.mockk:mockk:1.13.8")
-    testImplementation("org.testcontainers:testcontainers:1.20.5")
+    testImplementation("org.testcontainers:testcontainers:1.20.4")
+    testImplementation("org.testcontainers:postgresql:1.20.5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
