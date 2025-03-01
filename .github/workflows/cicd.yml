@@ -45,9 +45,6 @@ jobs:
       - name: Run Ktlint Check
         run: ./gradlew ktlintCheck
 
-      - name: Start Docker Compose
-        run: docker-compose up -d
-
       - name: Run Tests
         run: ./gradlew test
 
