@@ -36,7 +36,7 @@ class JwtFilterTest {
     @Test
     fun `shouldNotFilter should return false on auth`() {
         val mockRequest = mockk<HttpServletRequest>()
-        every { mockRequest.requestURI } returns "/auth"
+        every { mockRequest.requestURI } returns "/user/token"
 
         assertTrue(
             jwtFilter.shouldNotFilter(mockRequest),
