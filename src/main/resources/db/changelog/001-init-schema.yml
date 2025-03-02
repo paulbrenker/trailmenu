@@ -62,4 +62,17 @@ databaseChangeLog:
             tableName: users_roles
             columnNames: user_id, role
 
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: type
+                  value: USER
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: type
+                  value: ADMIN
+
 
