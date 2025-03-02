@@ -17,8 +17,3 @@ data class RoleEntity(
     @Size(max = 50)
     val type: RoleType,
 )
-
-enum class RoleType {
-    USER,
-    ADMIN,
-}
