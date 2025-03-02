@@ -30,5 +30,5 @@ data class UserEntity(
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role")],
     )
-    val roles: Set<RoleEntity> = setOf(RoleEntity(type = RoleType.USER)),
+    val roles: Set<RoleEntity> = setOf(),
 )

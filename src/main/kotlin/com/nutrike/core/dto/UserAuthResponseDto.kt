@@ -1,5 +1,5 @@
 package com.nutrike.core.dto
 
-data class AuthResponseDto(
+data class UserAuthResponseDto(
     val token: String,
 )
