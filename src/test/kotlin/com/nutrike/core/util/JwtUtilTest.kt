@@ -15,7 +15,7 @@ class JwtUtilTest {
 
     @BeforeEach
     fun setUp() {
-        token = jwtUtil.generateToken(testuser)
+        token = jwtUtil.generateToken(testuser, setOf("USER"))
         bearerToken = "Bearer $token"
     }
 
@@ -23,7 +23,8 @@ class JwtUtilTest {
     fun `should successfully generate token`() {
         val validatedJwt = jwtUtil.validateToken(token)
         assertThat(bearerToken).isEqualTo("Bearer $token")
-        assertThat(validatedJwt).isEqualTo(testuser)
+        assertThat(validatedJwt!!.subject).isEqualTo(testuser)
+        assertThat(validatedJwt["roles"]).isEqualTo(listOf("USER"))
     }
 
     @Test
@@ -32,7 +33,7 @@ class JwtUtilTest {
         val fakeTime = System.currentTimeMillis() - 1
         every { ClockUtil.tokenExpirationTime() } returns fakeTime
 
-        val expiredToken = jwtUtil.generateToken(testuser)
+        val expiredToken = jwtUtil.generateToken(testuser, setOf("USER"))
         val validatedJwt = jwtUtil.validateToken(expiredToken)
 
         assertThat(validatedJwt).isNull()

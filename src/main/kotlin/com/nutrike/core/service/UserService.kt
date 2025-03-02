@@ -1,9 +1,9 @@
 package com.nutrike.core.service
 
 import com.nutrike.core.dto.UserAuthResponseDto
+import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
-import com.nutrike.core.dto.UserUpdateRequestDto
 import com.nutrike.core.entity.RoleEntity
 import com.nutrike.core.entity.RoleType
 import com.nutrike.core.entity.UserEntity
@@ -36,7 +36,17 @@ class UserService {
             )
 
         return if (userEntity != null) {
-            ResponseEntity.ok(UserAuthResponseDto(jwtUtil.generateToken(userEntity.username)))
+            ResponseEntity.ok(
+                UserAuthResponseDto(
+                    jwtUtil.generateToken(
+                        userEntity.username,
+                        userEntity.roles
+                            .map {
+                                it.type.toString()
+                            }.toSet(),
+                    ),
+                ),
+            )
         } else {
             ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
         }
@@ -71,21 +81,15 @@ class UserService {
 
     fun updateUser(
         id: UUID,
-        userUpdateRequestDto: UserUpdateRequestDto,
+        userUpdateRequestDto: UserPermissionsUpdateRequestDto,
     ): ResponseEntity<UserResponseDto> {
         val userEntity =
             userRepository
                 .findById(id)
                 .orElseThrow { EntityNotFoundException("User with id $id not found") }
 
-        if (userEntity.password != userUpdateRequestDto.oldPassword) {
-            throw IllegalArgumentException("Old password is incorrect")
-        }
-
         val updatedUser =
             userEntity.copy(
-                username = userUpdateRequestDto.username,
-                password = userUpdateRequestDto.newPassword,
                 approval = userUpdateRequestDto.approval,
                 roles = getRoles(userUpdateRequestDto.roles.map { it.type }.toSet()),
             )
