@@ -1,9 +1,9 @@
 package com.nutrike.core.controller
 
 import com.nutrike.core.dto.UserAuthResponseDto
+import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
-import com.nutrike.core.dto.UserUpdateRequestDto
 import com.nutrike.core.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -32,7 +32,7 @@ class UserController {
         summary = "Authenticate a user",
         description =
             "Authenticate a user and retrieve a Jwt token to access" +
-                " ressources of nutrike app. No auth needed.",
+                " resources of nutrike app. No auth needed.",
     )
     @PostMapping("/token")
     fun getToken(
@@ -59,11 +59,11 @@ class UserController {
 
     @Operation(
         summary = "Update a user",
-        description = "Update a users properties. Endpoint requires admin permissions.",
+        description = "Update a users permission properties. Endpoint requires admin permissions.",
     )
-    @PutMapping("/{id}")
+    @PutMapping("/{id}/approval")
     fun updateUser(
         @Valid @PathVariable id: UUID,
-        @Valid @RequestBody userUpdate: UserUpdateRequestDto,
+        @Valid @RequestBody userUpdate: UserPermissionsUpdateRequestDto,
     ): ResponseEntity<UserResponseDto> = service.updateUser(id, userUpdate)
 }

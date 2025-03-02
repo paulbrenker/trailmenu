@@ -10,7 +10,7 @@ class AuthenticationConfig {
                 "/actuator/**" to HttpMethod.GET,
                 "/user/token" to HttpMethod.POST,
                 "/user" to HttpMethod.POST,
-                "swagger-ui/**" to HttpMethod.GET,
+                "/swagger-ui/**" to HttpMethod.GET,
                 "/v3/api-docs/**" to HttpMethod.GET,
             )
         val ADMIN_RIGHTS_REQUIRED =

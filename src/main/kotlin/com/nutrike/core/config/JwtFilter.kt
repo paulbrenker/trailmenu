@@ -18,8 +18,10 @@ class JwtFilter(
     private val jwtUtil: JwtUtil,
 ) : OncePerRequestFilter() {
     public override fun shouldNotFilter(request: HttpServletRequest): Boolean =
-        AUTHENTICATION_EXCLUDE.keys
-            .contains(request.requestURI)
+        AUTHENTICATION_EXCLUDE
+            .filter { (path, method) ->
+                (path == request.requestURI) && (method.toString() == request.method)
+            }.isNotEmpty()
 
     public override fun doFilterInternal(
         request: HttpServletRequest,
@@ -34,7 +36,7 @@ class JwtFilter(
 
             if (claims != null && SecurityContextHolder.getContext().authentication == null) {
                 val username = claims.subject
-                val roles = (claims["roles"] as? List<String>) ?: emptyList()
+                val roles = claims["roles"] as? List<String> ?: emptyList()
                 val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
 
                 val authentication =
