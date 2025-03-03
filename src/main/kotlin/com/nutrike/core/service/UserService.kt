@@ -20,13 +20,13 @@ import java.util.UUID
 @Service
 class UserService {
     @Autowired
-    private lateinit var jwtUtil: JwtUtil
+    internal lateinit var jwtUtil: JwtUtil
 
     @Autowired
-    private lateinit var userRepository: UserRepository
+    internal lateinit var userRepository: UserRepository
 
     @Autowired
-    private lateinit var roleRepository: RoleRepository
+    internal lateinit var roleRepository: RoleRepository
 
     fun authenticateWithUsernameAndPassword(authRequest: UserRequestDto): ResponseEntity<UserAuthResponseDto> {
         val userEntity =
