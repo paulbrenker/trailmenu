@@ -10,7 +10,6 @@ import com.nutrike.core.entity.UserEntity
 import com.nutrike.core.repo.RoleRepository
 import com.nutrike.core.repo.UserRepository
 import com.nutrike.core.util.JwtUtil
-import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -60,7 +59,7 @@ class UserService {
                 },
             )
         } else {
-            ResponseEntity.status(HttpStatus.NO_CONTENT).build()
+            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
     }
 
@@ -85,10 +84,13 @@ class UserService {
         val userEntity =
             userRepository
                 .findById(username)
-                .orElseThrow { EntityNotFoundException("User with username $username not found") }
+
+        if (userEntity.isEmpty) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+        }
 
         val updatedUser =
-            userEntity.copy(
+            userEntity.get().copy(
                 approval = userUpdateRequestDto.approval,
                 roles = getRoles(userUpdateRequestDto.roles.map { it.type }.toSet()),
             )
