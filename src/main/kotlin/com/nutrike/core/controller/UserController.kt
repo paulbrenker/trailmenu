@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController
 @Validated
 class UserController {
     @Autowired
-    private lateinit var service: UserService
+    internal lateinit var service: UserService
 
     @Operation(
         summary = "Authenticate a user",
@@ -57,7 +57,7 @@ class UserController {
     ): ResponseEntity<UserResponseDto> = service.insertUser(userInsert)
 
     @Operation(
-        summary = "Update a user",
+        summary = "Update a users permissions",
         description = "Update a users permission properties. Endpoint requires admin permissions.",
     )
     @PutMapping("/{username}/approval")
