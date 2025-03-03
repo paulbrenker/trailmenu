@@ -1,6 +1,8 @@
 package com.nutrike.core.config
 
+import com.nutrike.core.config.AuthenticationConfig.Companion.ADMIN_RIGHTS_REQUIRED
 import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_EXCLUDE
+import com.nutrike.core.entity.RoleType
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -22,7 +24,13 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .exceptionHandling { it.authenticationEntryPoint(jwtAuthenticationEntryPoint) }
             .authorizeHttpRequests {
-                AUTHENTICATION_EXCLUDE.map { permit -> it.requestMatchers(permit).permitAll() }
+                AUTHENTICATION_EXCLUDE.map { (path, method) -> it.requestMatchers(method, path).permitAll() }
+                ADMIN_RIGHTS_REQUIRED.map { (path, method) ->
+                    it.requestMatchers(method, path).hasRole(
+                        RoleType.ADMIN
+                            .toString(),
+                    )
+                }
                 it.anyRequest().authenticated()
             }.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()

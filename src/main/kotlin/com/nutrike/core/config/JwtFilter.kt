@@ -8,8 +8,8 @@ import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
@@ -19,7 +19,9 @@ class JwtFilter(
 ) : OncePerRequestFilter() {
     public override fun shouldNotFilter(request: HttpServletRequest): Boolean =
         AUTHENTICATION_EXCLUDE
-            .contains(request.requestURI)
+            .filter { (path, method) ->
+                (path == request.requestURI) && (method.toString() == request.method)
+            }.isNotEmpty()
 
     public override fun doFilterInternal(
         request: HttpServletRequest,
@@ -29,21 +31,19 @@ class JwtFilter(
         val authHeader = request.getHeader(AUTHENTICATION_HEADER)
 
         if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {
-            val token = authHeader.substring(7)
-            val username = jwtUtil.validateToken(token)
+            val token = authHeader.substring(TOKEN_PREFIX.length)
+            val claims = jwtUtil.validateToken(token)
 
-            if (username != null && SecurityContextHolder.getContext().authentication == null) {
-                val userDetails = User(username, "", emptyList())
+            if (claims != null && SecurityContextHolder.getContext().authentication == null) {
+                val username = claims.subject
+                val roles = claims["roles"] as? List<String> ?: emptyList()
+                val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
+
                 val authentication =
-                    UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.authorities,
-                    )
+                    UsernamePasswordAuthenticationToken(username, null, authorities)
                 SecurityContextHolder.getContext().authentication = authentication
             }
         }
-
         chain.doFilter(request, response)
     }
 }
