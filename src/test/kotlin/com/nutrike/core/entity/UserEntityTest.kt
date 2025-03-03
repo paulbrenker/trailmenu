@@ -14,7 +14,6 @@ class UserEntityTest {
     fun `new user default parameters are set`() {
         val user = UserEntity(username = "testUser", password = "testPassword")
 
-        assertThat(user.id).isNull()
         assertThat(user.username).isEqualTo(user.username)
         assertThat(user.password).isEqualTo(user.password)
         assertThat(user.approval).isFalse()

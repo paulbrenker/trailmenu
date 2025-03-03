@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.util.UUID
 
 @RestController
 @Tag(name = "Authentication", description = "User authentication")
@@ -61,9 +60,9 @@ class UserController {
         summary = "Update a user",
         description = "Update a users permission properties. Endpoint requires admin permissions.",
     )
-    @PutMapping("/{id}/approval")
+    @PutMapping("/{username}/approval")
     fun updateUser(
-        @Valid @PathVariable id: UUID,
+        @Valid @PathVariable username: String,
         @Valid @RequestBody userUpdate: UserPermissionsUpdateRequestDto,
-    ): ResponseEntity<UserResponseDto> = service.updateUser(id, userUpdate)
+    ): ResponseEntity<UserResponseDto> = service.updateUser(username, userUpdate)
 }

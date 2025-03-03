@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import java.util.UUID
 
 @Service
 class UserService {
@@ -80,13 +79,13 @@ class UserService {
         }
 
     fun updateUser(
-        id: UUID,
+        username: String,
         userUpdateRequestDto: UserPermissionsUpdateRequestDto,
     ): ResponseEntity<UserResponseDto> {
         val userEntity =
             userRepository
-                .findById(id)
-                .orElseThrow { EntityNotFoundException("User with id $id not found") }
+                .findById(username)
+                .orElseThrow { EntityNotFoundException("User with username $username not found") }
 
         val updatedUser =
             userEntity.copy(
@@ -106,7 +105,6 @@ class UserService {
 
     private fun entityToResponseDto(entity: UserEntity) =
         UserResponseDto(
-            entity.id!!,
             entity.username,
             entity.approval,
             entity.roles,

@@ -28,11 +28,6 @@ class UserRepositoryTest : BaseContainerTest() {
     }
 
     @Test
-    fun `upon saving with null id a uuid is generated`() {
-        assertThat(user.id).isNotNull
-    }
-
-    @Test
     fun `find by username and password and approve returns only all are true`() {
         val wrongUsername = repository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue("non-existent", "abc")
         assertThat(wrongUsername).isNull()

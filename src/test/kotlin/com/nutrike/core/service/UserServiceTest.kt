@@ -12,7 +12,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.http.HttpStatus
-import java.util.UUID
 
 @ExtendWith(MockKExtension::class)
 class UserServiceTest {
@@ -49,10 +48,8 @@ class UserServiceTest {
     fun `authentication should return ok when username and password succeeds`() {
         val existUsername = "existent"
         val matchingPassword = "1234"
-        val userId = UUID.randomUUID()
         val mockUser =
             UserEntity(
-                id = userId,
                 username = existUsername,
                 password = matchingPassword,
                 approval = true,

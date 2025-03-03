@@ -15,7 +15,7 @@ class AuthenticationConfig {
             )
         val ADMIN_RIGHTS_REQUIRED =
             mapOf(
-                "/user/{id}/approval" to HttpMethod.PUT,
+                "/user/{username}/approval" to HttpMethod.PUT,
                 "/user" to HttpMethod.GET,
             )
         const val TOKEN_PREFIX = "Bearer "

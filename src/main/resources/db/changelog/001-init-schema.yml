@@ -17,16 +17,10 @@ databaseChangeLog:
             tableName: users
             columns:
               - column:
-                  name: id
-                  type: UUID
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-                    defaultValueComputed: uuid_generate_v4()
-              - column:
                   name: username
                   type: VARCHAR(150)
                   constraints:
+                    primaryKey: true
                     nullable: false
                     unique: true
               - column:
@@ -45,11 +39,11 @@ databaseChangeLog:
             columns:
               - column:
                   name: user_id
-                  type: UUID
+                  type: VARCHAR(150)
                   constraints:
                     foreignKeyName: fk_user_id
                     nullable: false
-                    references: users(id)
+                    references: users(username)
               - column:
                   name: role
                   type: VARCHAR(50)
