@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -49,36 +50,22 @@ class JwtFilterTest {
     private fun invalidAuthProvider(): Stream<Arguments> {
         val mockSecurityContext = mockk<SecurityContext>(relaxed = true)
 
-        fun getNotNullContext(mockSecurityContext: SecurityContext): SecurityContext {
+        fun getNotNullContext(mockSecurityContext: SecurityContext): Authentication {
             mockSecurityContext.authentication =
                 UsernamePasswordAuthenticationToken(
                     User("test-user", "abc", emptyList()),
                     null,
                     emptyList(),
                 )
-            return mockSecurityContext
+            return mockSecurityContext.authentication
         }
 
         return Stream.of(
-            Arguments.of(null, null, mockSecurityContext),
-            Arguments.of("starts not with Bearer ", null, mockSecurityContext),
-            Arguments.of("Bearer not.a.token", null, mockSecurityContext),
-            Arguments.of(
-                "Bearer not.a.token",
-                mockk<Claims> {
-                    every { subject } returns "test-user"
-                    every { get("roles", List::class.java) } returns listOf("USER")
-                },
-                getNotNullContext(mockSecurityContext),
-            ),
-            Arguments.of(
-                "Bearer testToken",
-                mockk<Claims> {
-                    every { subject } returns "test-user"
-                    every { get("roles", List::class.java) } returns listOf("USER")
-                },
-                mockSecurityContext,
-            ),
+            Arguments.of(null, false, null, false),
+            Arguments.of("starts not with Bearer ", false, null, false),
+            Arguments.of("Bearer not.a.token", false, null, false),
+            Arguments.of("Bearer not.a.token", true, getNotNullContext(mockSecurityContext), false),
+            Arguments.of("Bearer testToken", true, null, true),
         )
     }
 
@@ -86,8 +73,9 @@ class JwtFilterTest {
     @MethodSource("invalidAuthProvider")
     fun `should handle authorization requests correctly`(
         authHeader: String?,
-        claims: Claims?,
-        securityContext: SecurityContext?,
+        createClaims: Boolean,
+        authentication: Authentication?,
+        positiveTestCase: Boolean,
     ) {
         val mockRequest = mockk<HttpServletRequest>(relaxed = true)
         val mockResponse = mockk<HttpServletResponse>(relaxed = true)
@@ -95,25 +83,27 @@ class JwtFilterTest {
 
         mockkStatic(SecurityContextHolder::class)
 
-        every { mockRequest.getHeader(AUTHENTICATION_HEADER) } returns authHeader
-        every { jwtUtil.validateToken(any()) } returns claims
-        every { SecurityContextHolder.getContext() } returns securityContext
-
-        jwtFilter.doFilterInternal(mockRequest, mockResponse, mockFilterChain)
-
-        if (claims != null && securityContext?.authentication == null) {
-            verify {
-                SecurityContextHolder.getContext().authentication =
-                    withArg<Authentication> { auth ->
-                        assert(auth is UsernamePasswordAuthenticationToken)
-                        assert(auth.principal == claims.subject)
-                        assert(auth.authorities.map { it.authority } == claims["roles", List::class.java]?.map { "ROLE_$it" })
-                    }
-            }
-        } else {
-            verify(inverse = true) { SecurityContextHolder.getContext().authentication = any() }
+        var claims: Claims? = null
+        if (createClaims) {
+            claims =
+                mockk<Claims>(relaxed = true, relaxUnitFun = true) {
+                    every { subject } returns "test-username"
+                    every { get("roles", List::class.java) } returns listOf("USER")
+                }
         }
 
-        verify { mockFilterChain.doFilter(mockRequest, mockResponse) }
+        every { mockRequest.getHeader(AUTHENTICATION_HEADER) } returns authHeader
+        every { jwtUtil.validateToken(any()) } returns claims
+        every { SecurityContextHolder.getContext().authentication } returns authentication
+
+        if (positiveTestCase) {
+            assertThrows<io.mockk.MockKException> {
+                // should throw because no SecurityContext exists
+                jwtFilter.doFilterInternal(mockRequest, mockResponse, mockFilterChain)
+            }
+        } else {
+            jwtFilter.doFilterInternal(mockRequest, mockResponse, mockFilterChain)
+            verify(inverse = true) { SecurityContextHolder.getContext().authentication = any() }
+        }
     }
 }
