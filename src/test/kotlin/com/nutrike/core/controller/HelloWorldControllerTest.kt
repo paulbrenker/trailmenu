@@ -1,11 +1,17 @@
 import com.nutrike.core.controller.HelloWorldController
-import com.nutrike.core.util.BaseControllerTest
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
 
-@SpringBootTest(classes = [HelloWorldController::class])
-class HelloWorldControllerTest : BaseControllerTest() {
+class HelloWorldControllerTest {
+    private var mockMvc: MockMvc
+    private var helloWorldController: HelloWorldController = HelloWorldController()
+
+    init {
+        mockMvc = MockMvcBuilders.standaloneSetup(helloWorldController).build()
+    }
+
     @Test
     fun `should return Hello World on hello-world endpoint`() {
         mockMvc
