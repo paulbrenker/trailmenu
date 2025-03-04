@@ -19,6 +19,8 @@ Install Java version 21 Temurin using sdkman on your machine.
 
 ### Database
 
+To start up the local database docker needs to be installed. Start up database container using `docker compose up -d`
+
 ### OpenAPI
 
 Endpoints and Authentication are documented using OpenAPI and the SwaggerUI.
@@ -28,7 +30,7 @@ Endpoints and Authentication are documented using OpenAPI and the SwaggerUI.
 
 ### Testing
 
-Tests can be executed using `./gradlew test`. A test coverage limit of 70% is automatically enforced. You can view
+Tests can be executed using `./gradlew test`. A test coverage limit of 80% is automatically enforced. You can view
 the current coverage report [here](http://localhost:63342/core/build/reports/jacoco/test/html/index.html?).
 
 ## Project Management
