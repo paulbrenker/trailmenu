@@ -10,6 +10,7 @@ import com.nutrike.core.entity.UserEntity
 import com.nutrike.core.repo.RoleRepository
 import com.nutrike.core.repo.UserRepository
 import com.nutrike.core.util.JwtUtil
+import com.nutrike.core.util.PasswordEncoderUtil
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -26,14 +27,19 @@ class UserService {
     @Autowired
     internal lateinit var roleRepository: RoleRepository
 
+    @Autowired
+    internal lateinit var passwordEncoder: PasswordEncoderUtil
+
     fun authenticateWithUsernameAndPassword(authRequest: UserRequestDto): ResponseEntity<UserAuthResponseDto> {
         val userEntity =
-            userRepository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue(
+            userRepository.findUserEntityByUsernameAndApprovalIsTrue(
                 authRequest.username,
-                authRequest.password,
             )
 
-        return if (userEntity != null) {
+        return if (
+            userEntity != null &&
+            passwordEncoder.verifyPassword(authRequest.password, userEntity.password)
+        ) {
             ResponseEntity.ok(
                 UserAuthResponseDto(
                     jwtUtil.generateToken(
@@ -74,6 +80,7 @@ class UserService {
                 ),
             )
         } catch (e: Exception) {
+            println(e.message)
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
 
@@ -115,7 +122,7 @@ class UserService {
     private fun requestDtoToEntity(requestDto: UserRequestDto): UserEntity =
         UserEntity(
             username = requestDto.username,
-            password = requestDto.password,
+            password = passwordEncoder.encodePassword(requestDto.password),
             roles = getRoles(setOf(RoleType.USER)),
         )
 }

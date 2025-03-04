@@ -6,8 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository : JpaRepository<UserEntity, String> {
-    fun findUserEntityByUsernameAndPasswordAndApprovalIsTrue(
-        username: String,
-        password: String,
-    ): UserEntity?
+    fun findUserEntityByUsernameAndApprovalIsTrue(username: String): UserEntity?
 }

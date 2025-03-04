@@ -29,13 +29,10 @@ class UserRepositoryTest : BaseContainerTest() {
 
     @Test
     fun `find by username and password and approve returns only all are true`() {
-        val wrongUsername = repository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue("non-existent", "abc")
+        val wrongUsername = repository.findUserEntityByUsernameAndApprovalIsTrue("non-existent")
         assertThat(wrongUsername).isNull()
 
-        val wrongPassword = repository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue("test-user", "123")
-        assertThat(wrongPassword).isNull()
-
-        val rightCombination = repository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue("test-user", "abc")
+        val rightCombination = repository.findUserEntityByUsernameAndApprovalIsTrue("test-user")
         assertThat(rightCombination).isNotNull
         assertThat(rightCombination).isEqualTo(user)
     }
