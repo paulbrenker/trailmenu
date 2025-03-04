@@ -8,6 +8,7 @@ import com.nutrike.core.entity.UserEntity
 import com.nutrike.core.repo.RoleRepository
 import com.nutrike.core.repo.UserRepository
 import com.nutrike.core.util.JwtUtil
+import com.nutrike.core.util.PasswordEncoderUtil
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
@@ -24,6 +25,7 @@ class UserServiceTest {
     private val userRepository: UserRepository = mockk()
     private val jwtUtil: JwtUtil = mockk()
     private val roleRepository: RoleRepository = mockk()
+    private val passwordEncoder: PasswordEncoderUtil = mockk()
 
     private val service = UserService()
 
@@ -31,6 +33,7 @@ class UserServiceTest {
         service.jwtUtil = jwtUtil
         service.userRepository = userRepository
         service.roleRepository = roleRepository
+        service.passwordEncoder = passwordEncoder
     }
 
     @Test
@@ -39,7 +42,7 @@ class UserServiceTest {
         val nonMatchingPassword = "1234"
 
         every {
-            userRepository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue(nonExistUsername, nonMatchingPassword)
+            userRepository.findUserEntityByUsernameAndApprovalIsTrue(nonExistUsername)
         } returns null
 
         assertThat(
@@ -64,10 +67,11 @@ class UserServiceTest {
         val mockToken = "mockToken"
 
         every {
-            userRepository.findUserEntityByUsernameAndPasswordAndApprovalIsTrue(existUsername, matchingPassword)
+            userRepository.findUserEntityByUsernameAndApprovalIsTrue(existUsername)
         } returns mockUser
 
         every { jwtUtil.generateToken(existUsername, emptySet()) } returns mockToken
+        every { passwordEncoder.verifyPassword("1234", any()) } returns true
 
         assertThat(
             service
@@ -111,6 +115,7 @@ class UserServiceTest {
             Optional.of(RoleEntity(RoleType.USER))
         every { userRepository.save(any()) } returns
             UserEntity("username", "password")
+        every { passwordEncoder.encodePassword("password") } returns "encodedPassword"
         val response =
             service.insertUser(
                 UserRequestDto("username", "password"),
