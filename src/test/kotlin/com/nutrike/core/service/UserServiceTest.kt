@@ -5,7 +5,6 @@ import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.entity.RoleEntity
 import com.nutrike.core.entity.RoleType
 import com.nutrike.core.entity.UserEntity
-import com.nutrike.core.repo.RoleRepository
 import com.nutrike.core.repo.UserRepository
 import com.nutrike.core.util.JwtUtil
 import com.nutrike.core.util.PasswordEncoderUtil
@@ -24,7 +23,6 @@ import java.util.Optional
 class UserServiceTest {
     private val userRepository: UserRepository = mockk()
     private val jwtUtil: JwtUtil = mockk()
-    private val roleRepository: RoleRepository = mockk()
     private val passwordEncoder: PasswordEncoderUtil = mockk()
 
     private val service = UserService()
@@ -32,7 +30,6 @@ class UserServiceTest {
     init {
         service.jwtUtil = jwtUtil
         service.userRepository = userRepository
-        service.roleRepository = roleRepository
         service.passwordEncoder = passwordEncoder
     }
 
@@ -100,7 +97,6 @@ class UserServiceTest {
 
     @Test
     fun `insert user throws an error when the repository returns an error`() {
-        every { roleRepository.findById(RoleType.USER) } returns Optional.of(RoleEntity(RoleType.USER))
         every { userRepository.save(any()) } throws ConstraintViolationException("sql violation", SQLException(), null)
         val response =
             service.insertUser(
@@ -111,8 +107,6 @@ class UserServiceTest {
 
     @Test
     fun `insert user returns ok when repository returns an Entity`() {
-        every { roleRepository.findById(RoleType.USER) } returns
-            Optional.of(RoleEntity(RoleType.USER))
         every { userRepository.save(any()) } returns
             UserEntity("username", "password")
         every { passwordEncoder.encodePassword("password") } returns "encodedPassword"
@@ -139,8 +133,6 @@ class UserServiceTest {
 
     @Test
     fun `updateUser returns ok response if successfully updated`() {
-        every { roleRepository.findById(RoleType.USER) } returns
-            Optional.of(RoleEntity(RoleType.USER))
         every { userRepository.findById(any()) } returns
             Optional.of(UserEntity("username", "password"))
         every { userRepository.save(any()) } returns
