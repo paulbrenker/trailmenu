@@ -5,9 +5,7 @@ import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
 import com.nutrike.core.entity.RoleEntity
-import com.nutrike.core.entity.RoleType
 import com.nutrike.core.entity.UserEntity
-import com.nutrike.core.repo.RoleRepository
 import com.nutrike.core.repo.UserRepository
 import com.nutrike.core.util.JwtUtil
 import com.nutrike.core.util.PasswordEncoderUtil
@@ -23,9 +21,6 @@ class UserService {
 
     @Autowired
     internal lateinit var userRepository: UserRepository
-
-    @Autowired
-    internal lateinit var roleRepository: RoleRepository
 
     @Autowired
     internal lateinit var passwordEncoder: PasswordEncoderUtil
@@ -75,7 +70,10 @@ class UserService {
                 entityToResponseDto(
                     userRepository
                         .save(
-                            requestDtoToEntity(userRequestDto),
+                            UserEntity(
+                                userRequestDto.username,
+                                passwordEncoder.encodePassword(userRequestDto.password),
+                            ),
                         ),
                 ),
             )
@@ -99,30 +97,17 @@ class UserService {
         val updatedUser =
             userEntity.get().copy(
                 approval = userUpdateRequestDto.approval,
-                roles = getRoles(userUpdateRequestDto.roles.map { it.type }.toSet()),
+                roles = userUpdateRequestDto.roles.map { RoleEntity(it.type) }.toSet(),
             )
 
         val savedUser = userRepository.save(updatedUser)
         return ResponseEntity.ok(entityToResponseDto(savedUser))
     }
 
-    private fun getRoles(roles: Set<RoleType>): Set<RoleEntity> =
-        roles
-            .map {
-                roleRepository.findById(it).get()
-            }.toSet()
-
     private fun entityToResponseDto(entity: UserEntity) =
         UserResponseDto(
             entity.username,
             entity.approval,
             entity.roles,
-        )
-
-    private fun requestDtoToEntity(requestDto: UserRequestDto): UserEntity =
-        UserEntity(
-            username = requestDto.username,
-            password = passwordEncoder.encodePassword(requestDto.password),
-            roles = getRoles(setOf(RoleType.USER)),
         )
 }

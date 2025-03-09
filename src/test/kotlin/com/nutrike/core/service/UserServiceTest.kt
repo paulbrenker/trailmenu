@@ -5,13 +5,13 @@ import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.entity.RoleEntity
 import com.nutrike.core.entity.RoleType
 import com.nutrike.core.entity.UserEntity
-import com.nutrike.core.repo.RoleRepository
 import com.nutrike.core.repo.UserRepository
 import com.nutrike.core.util.JwtUtil
 import com.nutrike.core.util.PasswordEncoderUtil
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.hibernate.exception.ConstraintViolationException
 import org.junit.jupiter.api.Test
@@ -24,7 +24,6 @@ import java.util.Optional
 class UserServiceTest {
     private val userRepository: UserRepository = mockk()
     private val jwtUtil: JwtUtil = mockk()
-    private val roleRepository: RoleRepository = mockk()
     private val passwordEncoder: PasswordEncoderUtil = mockk()
 
     private val service = UserService()
@@ -32,7 +31,6 @@ class UserServiceTest {
     init {
         service.jwtUtil = jwtUtil
         service.userRepository = userRepository
-        service.roleRepository = roleRepository
         service.passwordEncoder = passwordEncoder
     }
 
@@ -51,6 +49,8 @@ class UserServiceTest {
                     UserRequestDto(nonExistUsername, nonMatchingPassword),
                 ).statusCode,
         ).isEqualTo(HttpStatus.UNAUTHORIZED)
+
+        verify(inverse = true) { passwordEncoder.verifyPassword(any(), any()) }
     }
 
     @Test
@@ -71,7 +71,7 @@ class UserServiceTest {
         } returns mockUser
 
         every { jwtUtil.generateToken(existUsername, emptySet()) } returns mockToken
-        every { passwordEncoder.verifyPassword("1234", any()) } returns true
+        every { passwordEncoder.verifyPassword("1234", matchingPassword) } returns true
 
         assertThat(
             service
@@ -79,6 +79,8 @@ class UserServiceTest {
                     UserRequestDto(existUsername, matchingPassword),
                 ).statusCode,
         ).isEqualTo(HttpStatus.OK)
+
+        verify { passwordEncoder.verifyPassword("1234", matchingPassword) }
     }
 
     @Test
@@ -100,7 +102,6 @@ class UserServiceTest {
 
     @Test
     fun `insert user throws an error when the repository returns an error`() {
-        every { roleRepository.findById(RoleType.USER) } returns Optional.of(RoleEntity(RoleType.USER))
         every { userRepository.save(any()) } throws ConstraintViolationException("sql violation", SQLException(), null)
         val response =
             service.insertUser(
@@ -110,9 +111,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `insert user returns ok when repository returns an Entity`() {
-        every { roleRepository.findById(RoleType.USER) } returns
-            Optional.of(RoleEntity(RoleType.USER))
+    fun `insertUser returns ok when repository returns an Entity`() {
         every { userRepository.save(any()) } returns
             UserEntity("username", "password")
         every { passwordEncoder.encodePassword("password") } returns "encodedPassword"
@@ -121,6 +120,7 @@ class UserServiceTest {
                 UserRequestDto("username", "password"),
             )
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        verify { passwordEncoder.encodePassword("password") }
     }
 
     @Test
@@ -139,8 +139,6 @@ class UserServiceTest {
 
     @Test
     fun `updateUser returns ok response if successfully updated`() {
-        every { roleRepository.findById(RoleType.USER) } returns
-            Optional.of(RoleEntity(RoleType.USER))
         every { userRepository.findById(any()) } returns
             Optional.of(UserEntity("username", "password"))
         every { userRepository.save(any()) } returns
