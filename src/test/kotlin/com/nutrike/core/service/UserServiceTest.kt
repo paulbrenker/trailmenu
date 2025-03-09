@@ -11,6 +11,7 @@ import com.nutrike.core.util.PasswordEncoderUtil
 import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
+import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
 import org.hibernate.exception.ConstraintViolationException
 import org.junit.jupiter.api.Test
@@ -48,6 +49,8 @@ class UserServiceTest {
                     UserRequestDto(nonExistUsername, nonMatchingPassword),
                 ).statusCode,
         ).isEqualTo(HttpStatus.UNAUTHORIZED)
+
+        verify(inverse = true) { passwordEncoder.verifyPassword(any(), any()) }
     }
 
     @Test
@@ -68,7 +71,7 @@ class UserServiceTest {
         } returns mockUser
 
         every { jwtUtil.generateToken(existUsername, emptySet()) } returns mockToken
-        every { passwordEncoder.verifyPassword("1234", any()) } returns true
+        every { passwordEncoder.verifyPassword("1234", matchingPassword) } returns true
 
         assertThat(
             service
@@ -76,6 +79,8 @@ class UserServiceTest {
                     UserRequestDto(existUsername, matchingPassword),
                 ).statusCode,
         ).isEqualTo(HttpStatus.OK)
+
+        verify { passwordEncoder.verifyPassword("1234", matchingPassword) }
     }
 
     @Test
@@ -106,7 +111,7 @@ class UserServiceTest {
     }
 
     @Test
-    fun `insert user returns ok when repository returns an Entity`() {
+    fun `insertUser returns ok when repository returns an Entity`() {
         every { userRepository.save(any()) } returns
             UserEntity("username", "password")
         every { passwordEncoder.encodePassword("password") } returns "encodedPassword"
@@ -115,6 +120,7 @@ class UserServiceTest {
                 UserRequestDto("username", "password"),
             )
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        verify { passwordEncoder.encodePassword("password") }
     }
 
     @Test
