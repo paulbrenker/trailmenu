@@ -1,15 +1,22 @@
 package com.nutrike.core.service
 
+import com.nutrike.core.dto.PageDto
+import com.nutrike.core.dto.PageInfoDto
 import com.nutrike.core.dto.UserAuthResponseDto
 import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
 import com.nutrike.core.entity.RoleEntity
+import com.nutrike.core.entity.RoleType
 import com.nutrike.core.entity.UserEntity
 import com.nutrike.core.repo.UserRepository
+import com.nutrike.core.repo.UserSpecification
+import com.nutrike.core.util.CursorUtil
 import com.nutrike.core.util.JwtUtil
 import com.nutrike.core.util.PasswordEncoderUtil
+import jakarta.transaction.Transactional
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -51,18 +58,29 @@ class UserService {
         }
     }
 
-    fun findAllUsers(): ResponseEntity<List<UserResponseDto>> {
-        val userEntities = userRepository.findAll()
-        return if (userEntities.isNotEmpty()) {
+    @Transactional
+    fun findAllUsers(
+        roleType: RoleType?,
+        limit: Int,
+        cursor: String?,
+    ): ResponseEntity<PageDto<UserResponseDto>> =
+        userRepository.findAll(UserSpecification(cursor, roleType), Pageable.ofSize(limit)).let {
             ResponseEntity.ok(
-                userEntities.map {
-                    entityToResponseDto(it)
-                },
+                PageDto<UserResponseDto>(
+                    pageInfo =
+                        PageInfoDto(
+                            pageSize = it.content.size,
+                            hasNext = it.hasNext(),
+                            endCursor =
+                                it.content.lastOrNull()?.username?.let { username ->
+                                    CursorUtil.getEncodedCursor(mapOf("username" to username), it.hasNext())
+                                },
+                        ),
+                    totalCount = userRepository.count().toInt(),
+                    data = it.content.map(::entityToResponseDto),
+                ),
             )
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).build()
         }
-    }
 
     fun insertUser(userRequestDto: UserRequestDto): ResponseEntity<UserResponseDto> =
         try {
