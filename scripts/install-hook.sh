@@ -7,7 +7,7 @@ cat >"$hook_file" <<EOF
 
 # No commiting to main
 
-if [ "\$(git rev-parse --abbrev-ref HEAD)" = "main"]; then
+if [ "\$(git rev-parse --abbrev-ref HEAD)" = "main" ]; then
   echo "You cannot commit directly to main branch"
   exit 1
 fi
@@ -21,10 +21,8 @@ if [ -z "\$STAGED_FILES" ]; then
   exit 0
 fi
 
-# -PinternalKtlintGitFilter=\$STAGED_FILES this flag might be used for better checks
 echo "Run Ktlint check"
-./gradlew --quiet ktlintCheck
-EXIT_CODE=\$?
+./gradlew --quiet ktlintCheck --args="$FILES"EXIT_CODE=\$?
 
 if [ \$EXIT_CODE -ne 0 ]; then
   echo "*********************"
