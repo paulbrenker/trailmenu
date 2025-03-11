@@ -2,6 +2,7 @@ package com.nutrike.core.service
 
 import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
 import com.nutrike.core.dto.UserRequestDto
+import com.nutrike.core.dto.UserResponseDto
 import com.nutrike.core.entity.RoleEntity
 import com.nutrike.core.entity.RoleType
 import com.nutrike.core.entity.UserEntity
@@ -16,6 +17,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.hibernate.exception.ConstraintViolationException
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import java.sql.SQLException
 import java.util.Optional
@@ -84,20 +87,52 @@ class UserServiceTest {
     }
 
     @Test
-    fun `find all users returns not found if no entries in db`() {
-        every { userRepository.findAll() } returns emptyList()
-        val response = service.findAllUsers()
-        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+    fun `find all users returns empty data if no entries in db`() {
+        val mockPage = mockk<Page<UserEntity>>(relaxed = true)
+
+        every { userRepository.findAll(any(), Pageable.ofSize(10)) } returns mockPage
+        every { userRepository.count() } returns 0
+        every { mockPage.content.size } returns 0
+        every { mockPage.hasNext() } returns false
+        every { mockPage.content[any()] } returns null
+
+        val response = service.findAllUsers(null, 10, null)
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.body!!.data).isEmpty()
+        assertThat(response.body!!.pageInfo.hasNext).isFalse()
+        assertThat(response.body!!.pageInfo.pageSize).isEqualTo(0)
+        assertThat(response.body!!.pageInfo.endCursor).isNull()
+        assertThat(response.body!!.totalCount).isEqualTo(0)
     }
 
     @Test
     fun `find all users returns ok if at least one user is in db`() {
-        every { userRepository.findAll() } returns
+        val mockPage = mockk<Page<UserEntity>>(relaxed = true)
+
+        every { userRepository.findAll(any(), Pageable.ofSize(10)) } returns mockPage
+        every { userRepository.count() } returns 1
+        every { mockPage.content.size } returns 1
+        every { mockPage.hasNext() } returns false
+        every { mockPage.content } returns
             listOf(
                 UserEntity("username", "password"),
             )
-        val response = service.findAllUsers()
+
+        val response = service.findAllUsers(null, 10, null)
+
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
+        assertThat(response.body!!.data).containsExactly(
+            UserResponseDto(
+                "username",
+                false,
+                setOf(RoleEntity(RoleType.USER)),
+            ),
+        )
+        assertThat(response.body!!.pageInfo.hasNext).isFalse()
+        assertThat(response.body!!.pageInfo.pageSize).isEqualTo(1)
+        assertThat(response.body!!.pageInfo.endCursor).isNull()
+        assertThat(response.body!!.totalCount).isEqualTo(1)
     }
 
     @Test
