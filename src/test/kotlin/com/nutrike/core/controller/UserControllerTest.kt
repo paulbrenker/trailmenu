@@ -21,7 +21,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper
 import java.util.stream.Stream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -29,7 +28,6 @@ class UserControllerTest {
     private var mockMvc: MockMvc
     private val userService: UserService = mockk()
     private var userController: UserController = UserController()
-    private val objectMapper = ObjectMapper()
 
     init {
         userController.service = userService
