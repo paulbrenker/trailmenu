@@ -77,7 +77,7 @@ class UserSpecificationTest : BaseContainerTest() {
             },
         )
 
-        val userFilter = repository.findAll(UserSpecification(null, RoleType.USER), Pageable.ofSize(10))
+        val userFilter = repository.findAll(UserSpecification(null, RoleType.PENDING), Pageable.ofSize(10))
 
         assertThat(userFilter.hasNext()).isFalse()
         assertThat(userFilter.content.size).isEqualTo(5)

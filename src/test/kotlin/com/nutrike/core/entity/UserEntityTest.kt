@@ -16,8 +16,7 @@ class UserEntityTest {
 
         assertThat(user.username).isEqualTo(user.username)
         assertThat(user.password).isEqualTo(user.password)
-        assertThat(user.approval).isFalse()
         assertThat(user.roles).hasSize(1)
-        assertThat(user.roles).containsOnly(RoleEntity(type = RoleType.USER))
+        assertThat(user.roles).containsOnly(RoleEntity(type = RoleType.PENDING))
     }
 }

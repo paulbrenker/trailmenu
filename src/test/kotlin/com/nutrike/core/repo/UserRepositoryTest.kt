@@ -18,7 +18,7 @@ class UserRepositoryTest : BaseContainerTest() {
     fun setup() {
         user =
             repository.save(
-                UserEntity(username = "test-user", password = "abc", approval = true),
+                UserEntity(username = "test-user", password = "abc"),
             )
     }
 
@@ -29,10 +29,10 @@ class UserRepositoryTest : BaseContainerTest() {
 
     @Test
     fun `find by username and password and approve returns only all are true`() {
-        val wrongUsername = repository.findUserEntityByUsernameAndApprovalIsTrue("non-existent")
+        val wrongUsername = repository.findUserEntityByUsername("non-existent")
         assertThat(wrongUsername).isNull()
 
-        val rightCombination = repository.findUserEntityByUsernameAndApprovalIsTrue("test-user")
+        val rightCombination = repository.findUserEntityByUsername("test-user")
         assertThat(rightCombination).isNotNull
         assertThat(rightCombination).isEqualTo(user)
     }

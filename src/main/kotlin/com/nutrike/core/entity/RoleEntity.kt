@@ -15,5 +15,5 @@ data class RoleEntity(
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
     @Size(max = 50)
-    val type: RoleType,
+    val type: RoleType = RoleType.PENDING,
 )

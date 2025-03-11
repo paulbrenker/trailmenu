@@ -43,7 +43,7 @@ class UserServiceTest {
         val nonMatchingPassword = "1234"
 
         every {
-            userRepository.findUserEntityByUsernameAndApprovalIsTrue(nonExistUsername)
+            userRepository.findUserEntityByUsername(nonExistUsername)
         } returns null
 
         assertThat(
@@ -57,6 +57,50 @@ class UserServiceTest {
     }
 
     @Test
+    fun `authentication should return unauthorized when password does not match`() {
+        val existUsername = "existent"
+        val nonMatchingPassword = "1234"
+
+        every {
+            userRepository.findUserEntityByUsername(existUsername)
+        } returns UserEntity("existent", "12345", setOf(RoleEntity(RoleType.USER)))
+        every {
+            passwordEncoder.verifyPassword(nonMatchingPassword, "12345")
+        } returns false
+
+        assertThat(
+            service
+                .authenticateWithUsernameAndPassword(
+                    UserRequestDto(existUsername, nonMatchingPassword),
+                ).statusCode,
+        ).isEqualTo(HttpStatus.UNAUTHORIZED)
+
+        verify { passwordEncoder.verifyPassword(any(), any()) }
+    }
+
+    @Test
+    fun `authentication should return unauthorized when user is PENDING`() {
+        val existUsername = "existent"
+        val nonMatchingPassword = "1234"
+
+        every {
+            userRepository.findUserEntityByUsername(existUsername)
+        } returns UserEntity("existent", "1234", setOf(RoleEntity(RoleType.PENDING)))
+        every {
+            passwordEncoder.verifyPassword(nonMatchingPassword, "1234")
+        } returns true
+
+        assertThat(
+            service
+                .authenticateWithUsernameAndPassword(
+                    UserRequestDto(existUsername, nonMatchingPassword),
+                ).statusCode,
+        ).isEqualTo(HttpStatus.UNAUTHORIZED)
+
+        verify { passwordEncoder.verifyPassword(any(), any()) }
+    }
+
+    @Test
     fun `authentication should return ok when username and password succeeds`() {
         val existUsername = "existent"
         val matchingPassword = "1234"
@@ -64,13 +108,12 @@ class UserServiceTest {
             UserEntity(
                 username = existUsername,
                 password = matchingPassword,
-                approval = true,
                 roles = emptySet(),
             )
         val mockToken = "mockToken"
 
         every {
-            userRepository.findUserEntityByUsernameAndApprovalIsTrue(existUsername)
+            userRepository.findUserEntityByUsername(existUsername)
         } returns mockUser
 
         every { jwtUtil.generateToken(existUsername, emptySet()) } returns mockToken
@@ -125,8 +168,7 @@ class UserServiceTest {
         assertThat(response.body!!.data).containsExactly(
             UserResponseDto(
                 "username",
-                false,
-                setOf(RoleEntity(RoleType.USER)),
+                setOf(RoleEntity(RoleType.PENDING)),
             ),
         )
         assertThat(response.body!!.pageInfo.hasNext).isFalse()
@@ -165,7 +207,6 @@ class UserServiceTest {
             service.patchUser(
                 "non-exist-user",
                 UserPermissionsPatchRequestDto(
-                    true,
                     listOf(RoleEntity(RoleType.USER)),
                 ),
             )
@@ -177,16 +218,14 @@ class UserServiceTest {
         every { userRepository.findById(any()) } returns
             Optional.of(UserEntity("username", "password"))
         every { userRepository.save(any()) } returns
-            UserEntity("username", "password", true)
+            UserEntity("username", "password")
         val response =
             service.patchUser(
                 "username",
                 UserPermissionsPatchRequestDto(
-                    true,
                     listOf(RoleEntity(RoleType.USER)),
                 ),
             )
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(response.body!!.approval).isTrue
     }
 }

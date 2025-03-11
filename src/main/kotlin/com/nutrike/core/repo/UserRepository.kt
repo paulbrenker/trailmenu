@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository
 interface UserRepository :
     JpaRepository<UserEntity, String>,
     JpaSpecificationExecutor<UserEntity> {
-    fun findUserEntityByUsernameAndApprovalIsTrue(username: String): UserEntity?
+    fun findUserEntityByUsername(username: String): UserEntity?
 }
