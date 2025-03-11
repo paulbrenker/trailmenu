@@ -3,7 +3,7 @@ package com.nutrike.core.service
 import com.nutrike.core.dto.PageDto
 import com.nutrike.core.dto.PageInfoDto
 import com.nutrike.core.dto.UserAuthResponseDto
-import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
+import com.nutrike.core.dto.UserPermissionsPatchRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
 import com.nutrike.core.entity.RoleEntity
@@ -100,9 +100,9 @@ class UserService {
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
 
-    fun updateUser(
+    fun patchUser(
         username: String,
-        userUpdateRequestDto: UserPermissionsUpdateRequestDto,
+        userUpdateRequestDto: UserPermissionsPatchRequestDto,
     ): ResponseEntity<UserResponseDto> {
         val userEntity =
             userRepository

@@ -2,7 +2,7 @@ package com.nutrike.core.controller
 
 import com.nutrike.core.dto.PageDto
 import com.nutrike.core.dto.UserAuthResponseDto
-import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
+import com.nutrike.core.dto.UserPermissionsPatchRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
 import com.nutrike.core.entity.RoleType
@@ -20,9 +20,9 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -81,9 +81,9 @@ class UserController {
         summary = "Update a users permissions",
         description = "Update a users permission properties. Endpoint requires admin permissions.",
     )
-    @PutMapping("/{username}/approval")
-    fun updateUser(
+    @PatchMapping("/{username}/approval")
+    fun updateUserPermissions(
         @Valid @PathVariable username: String,
-        @Valid @RequestBody userUpdate: UserPermissionsUpdateRequestDto,
-    ): ResponseEntity<UserResponseDto> = service.updateUser(username, userUpdate)
+        @Valid @RequestBody userUpdate: UserPermissionsPatchRequestDto,
+    ): ResponseEntity<UserResponseDto> = service.patchUser(username, userUpdate)
 }

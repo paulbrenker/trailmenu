@@ -16,6 +16,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -144,5 +145,27 @@ class UserControllerTest {
             .andExpect(jsonPath("$.username").value("test-user"))
             .andExpect(jsonPath("$.approval").value(false))
         verify { userService.insertUser(any()) }
+    }
+
+    @Test
+    fun `test patchUser endpoint returns NOT_FOUND on service not found`() {
+        every { userService.patchUser(any(), any()) } returns ResponseEntity.notFound().build()
+        mockMvc
+            .perform(
+                patch("/user/example/approval")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        """
+                        {
+                          "approval": true,
+                          "roles": [
+                            {
+                              "type": "USER"
+                            }
+                          ]
+                        }
+                        """.trimIndent(),
+                    ),
+            ).andExpect(status().isNotFound)
     }
 }

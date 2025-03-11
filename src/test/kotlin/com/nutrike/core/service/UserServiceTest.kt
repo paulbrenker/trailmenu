@@ -1,6 +1,6 @@
 package com.nutrike.core.service
 
-import com.nutrike.core.dto.UserPermissionsUpdateRequestDto
+import com.nutrike.core.dto.UserPermissionsPatchRequestDto
 import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.dto.UserResponseDto
 import com.nutrike.core.entity.RoleEntity
@@ -162,9 +162,9 @@ class UserServiceTest {
     fun `update a user that does not exist returns not found response`() {
         every { userRepository.findById(any()) } returns Optional.empty()
         val response =
-            service.updateUser(
+            service.patchUser(
                 "non-exist-user",
-                UserPermissionsUpdateRequestDto(
+                UserPermissionsPatchRequestDto(
                     true,
                     listOf(RoleEntity(RoleType.USER)),
                 ),
@@ -179,9 +179,9 @@ class UserServiceTest {
         every { userRepository.save(any()) } returns
             UserEntity("username", "password", true)
         val response =
-            service.updateUser(
+            service.patchUser(
                 "username",
-                UserPermissionsUpdateRequestDto(
+                UserPermissionsPatchRequestDto(
                     true,
                     listOf(RoleEntity(RoleType.USER)),
                 ),
