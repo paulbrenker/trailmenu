@@ -123,7 +123,6 @@ class UserControllerTest {
         val responseDto =
             UserResponseDto(
                 "test-user",
-                false,
                 setOf(RoleEntity(RoleType.USER)),
             )
         every { userService.insertUser(any()) } returns ResponseEntity.ok(responseDto)
@@ -141,7 +140,6 @@ class UserControllerTest {
                     ),
             ).andExpect(status().isOk)
             .andExpect(jsonPath("$.username").value("test-user"))
-            .andExpect(jsonPath("$.approval").value(false))
         verify { userService.insertUser(any()) }
     }
 

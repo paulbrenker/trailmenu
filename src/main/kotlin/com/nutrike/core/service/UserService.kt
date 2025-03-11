@@ -34,13 +34,14 @@ class UserService {
 
     fun authenticateWithUsernameAndPassword(authRequest: UserRequestDto): ResponseEntity<UserAuthResponseDto> {
         val userEntity =
-            userRepository.findUserEntityByUsernameAndApprovalIsTrue(
+            userRepository.findUserEntityByUsername(
                 authRequest.username,
             )
 
         return if (
             userEntity != null &&
-            passwordEncoder.verifyPassword(authRequest.password, userEntity.password)
+            passwordEncoder.verifyPassword(authRequest.password, userEntity.password) &&
+            !userEntity.roles.contains(RoleEntity(RoleType.PENDING))
         ) {
             ResponseEntity.ok(
                 UserAuthResponseDto(
@@ -114,7 +115,6 @@ class UserService {
 
         val updatedUser =
             userEntity.get().copy(
-                approval = userUpdateRequestDto.approval,
                 roles = userUpdateRequestDto.roles.map { RoleEntity(it.type) }.toSet(),
             )
 
@@ -125,7 +125,6 @@ class UserService {
     private fun entityToResponseDto(entity: UserEntity) =
         UserResponseDto(
             entity.username,
-            entity.approval,
             entity.roles,
         )
 }

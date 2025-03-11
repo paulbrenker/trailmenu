@@ -18,13 +18,11 @@ data class UserEntity(
     val username: String,
     @Column(nullable = false, length = 255, name = "password")
     val password: String,
-    @Column(nullable = false, name = "approval")
-    val approval: Boolean = false,
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.MERGE])
     @JoinTable(
         name = "users_roles",
         joinColumns = [JoinColumn(name = "user_id")],
         inverseJoinColumns = [JoinColumn(name = "role")],
     )
-    val roles: Set<RoleEntity> = setOf(RoleEntity(RoleType.USER)),
+    val roles: Set<RoleEntity> = setOf(RoleEntity()),
 )

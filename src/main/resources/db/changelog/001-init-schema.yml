@@ -28,12 +28,6 @@ databaseChangeLog:
                   type: VARCHAR(255)
                   constraints:
                     nullable: false
-              - column:
-                  name: approval
-                  type: BOOLEAN
-                  constraints:
-                    nullable: false
-                    defaultValueBoolean: false
         - createTable:
             tableName: users_roles
             columns:
@@ -56,6 +50,12 @@ databaseChangeLog:
             tableName: users_roles
             columnNames: user_id, role
 
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: type
+                  value: PENDING
         - insert:
             tableName: role
             columns:

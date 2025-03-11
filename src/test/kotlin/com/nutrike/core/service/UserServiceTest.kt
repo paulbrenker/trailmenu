@@ -43,7 +43,7 @@ class UserServiceTest {
         val nonMatchingPassword = "1234"
 
         every {
-            userRepository.findUserEntityByUsernameAndApprovalIsTrue(nonExistUsername)
+            userRepository.findUserEntityByUsername(nonExistUsername)
         } returns null
 
         assertThat(
@@ -64,13 +64,12 @@ class UserServiceTest {
             UserEntity(
                 username = existUsername,
                 password = matchingPassword,
-                approval = true,
                 roles = emptySet(),
             )
         val mockToken = "mockToken"
 
         every {
-            userRepository.findUserEntityByUsernameAndApprovalIsTrue(existUsername)
+            userRepository.findUserEntityByUsername(existUsername)
         } returns mockUser
 
         every { jwtUtil.generateToken(existUsername, emptySet()) } returns mockToken
@@ -125,8 +124,7 @@ class UserServiceTest {
         assertThat(response.body!!.data).containsExactly(
             UserResponseDto(
                 "username",
-                false,
-                setOf(RoleEntity(RoleType.USER)),
+                setOf(RoleEntity(RoleType.PENDING)),
             ),
         )
         assertThat(response.body!!.pageInfo.hasNext).isFalse()
@@ -165,7 +163,6 @@ class UserServiceTest {
             service.patchUser(
                 "non-exist-user",
                 UserPermissionsPatchRequestDto(
-                    true,
                     listOf(RoleEntity(RoleType.USER)),
                 ),
             )
@@ -177,16 +174,14 @@ class UserServiceTest {
         every { userRepository.findById(any()) } returns
             Optional.of(UserEntity("username", "password"))
         every { userRepository.save(any()) } returns
-            UserEntity("username", "password", true)
+            UserEntity("username", "password")
         val response =
             service.patchUser(
                 "username",
                 UserPermissionsPatchRequestDto(
-                    true,
                     listOf(RoleEntity(RoleType.USER)),
                 ),
             )
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
-        assertThat(response.body!!.approval).isTrue
     }
 }
