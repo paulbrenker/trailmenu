@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
+
+    <changeSet id="001-init" author="paul brenker">
+        <sql>
+            CREATE TABLE role
+            (
+                type VARCHAR(50) PRIMARY KEY NOT NULL UNIQUE
+            );
+        </sql>
+
+        <sql>
+            CREATE TABLE users
+            (
+                username VARCHAR(150) PRIMARY KEY NOT NULL UNIQUE,
+                password VARCHAR(255)             NOT NULL
+            );
+        </sql>
+
+        <sql>
+            CREATE TABLE users_roles
+            (
+                user_id VARCHAR(150) NOT NULL,
+                role    VARCHAR(50)  NOT NULL,
+                CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES users (username),
+                CONSTRAINT fk_role_type FOREIGN KEY (role) REFERENCES role (type),
+                CONSTRAINT unique_user_role UNIQUE (user_id, role)
+            );
+        </sql>
+
+        <sql>
+            INSERT INTO role (type)
+            VALUES ('PENDING'),
+                   ('USER'),
+                   ('ADMIN');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

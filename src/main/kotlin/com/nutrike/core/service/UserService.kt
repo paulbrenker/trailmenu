@@ -85,19 +85,19 @@ class UserService {
 
     fun insertUser(userRequestDto: UserRequestDto): ResponseEntity<UserResponseDto> =
         try {
-            ResponseEntity.ok(
-                entityToResponseDto(
-                    userRepository
-                        .save(
-                            UserEntity(
-                                userRequestDto.username,
-                                passwordEncoder.encodePassword(userRequestDto.password),
-                            ),
+            if (userRepository.existsById(userRequestDto.username)) {
+                ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+            } else {
+                val savedUser =
+                    userRepository.save(
+                        UserEntity(
+                            userRequestDto.username,
+                            passwordEncoder.encodePassword(userRequestDto.password),
                         ),
-                ),
-            )
+                    )
+                ResponseEntity.ok(entityToResponseDto(savedUser))
+            }
         } catch (e: Exception) {
-            println(e.message)
             ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
         }
 
