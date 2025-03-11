@@ -189,6 +189,7 @@ class UserServiceTest {
 
     @Test
     fun `insertUser returns ok when repository returns an Entity`() {
+        every { userRepository.existsById(any()) } returns false
         every { userRepository.save(any()) } returns
             UserEntity("username", "password")
         every { passwordEncoder.encodePassword("password") } returns "encodedPassword"
@@ -198,6 +199,19 @@ class UserServiceTest {
             )
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
         verify { passwordEncoder.encodePassword("password") }
+    }
+
+    @Test
+    fun `insertUser returns bad request when user exists`() {
+        every { userRepository.existsById(any()) } returns true
+
+        val response =
+            service.insertUser(
+                UserRequestDto("username", "password"),
+            )
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        verify(inverse = true) { passwordEncoder.encodePassword("password") }
     }
 
     @Test
