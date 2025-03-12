@@ -14,13 +14,13 @@ import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
 import org.assertj.core.api.Assertions.assertThat
-import org.hibernate.exception.ConstraintViolationException
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
-import java.sql.SQLException
+import org.springframework.web.server.ResponseStatusException
 import java.util.Optional
 
 @ExtendWith(MockKExtension::class)
@@ -46,12 +46,15 @@ class UserServiceTest {
             userRepository.findUserEntityByUsername(nonExistUsername)
         } returns null
 
-        assertThat(
-            service
-                .authenticateWithUsernameAndPassword(
-                    UserRequestDto(nonExistUsername, nonMatchingPassword),
-                ).statusCode,
-        ).isEqualTo(HttpStatus.UNAUTHORIZED)
+        val exception =
+            assertThrows<ResponseStatusException> {
+                service
+                    .authenticateWithUsernameAndPassword(
+                        UserRequestDto(nonExistUsername, nonMatchingPassword),
+                    )
+            }
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.UNAUTHORIZED)
+        assertThat(exception.message).contains("username or password invalid")
 
         verify(inverse = true) { passwordEncoder.verifyPassword(any(), any()) }
     }
@@ -68,18 +71,22 @@ class UserServiceTest {
             passwordEncoder.verifyPassword(nonMatchingPassword, "12345")
         } returns false
 
-        assertThat(
-            service
-                .authenticateWithUsernameAndPassword(
-                    UserRequestDto(existUsername, nonMatchingPassword),
-                ).statusCode,
-        ).isEqualTo(HttpStatus.UNAUTHORIZED)
+        val exception =
+            assertThrows<ResponseStatusException> {
+                service
+                    .authenticateWithUsernameAndPassword(
+                        UserRequestDto(existUsername, nonMatchingPassword),
+                    )
+            }
+
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.UNAUTHORIZED)
+        assertThat(exception.message).contains("username or password invalid")
 
         verify { passwordEncoder.verifyPassword(any(), any()) }
     }
 
     @Test
-    fun `authentication should return unauthorized when user is PENDING`() {
+    fun `authentication should return forbidden when user is PENDING`() {
         val existUsername = "existent"
         val nonMatchingPassword = "1234"
 
@@ -90,12 +97,16 @@ class UserServiceTest {
             passwordEncoder.verifyPassword(nonMatchingPassword, "1234")
         } returns true
 
-        assertThat(
-            service
-                .authenticateWithUsernameAndPassword(
-                    UserRequestDto(existUsername, nonMatchingPassword),
-                ).statusCode,
-        ).isEqualTo(HttpStatus.UNAUTHORIZED)
+        val exception =
+            assertThrows<ResponseStatusException> {
+                service
+                    .authenticateWithUsernameAndPassword(
+                        UserRequestDto(existUsername, nonMatchingPassword),
+                    )
+            }
+
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.FORBIDDEN)
+        assertThat(exception.message).contains("Your account needs approval by an admin")
 
         verify { passwordEncoder.verifyPassword(any(), any()) }
     }
@@ -178,13 +189,19 @@ class UserServiceTest {
     }
 
     @Test
-    fun `insert user throws an error when the repository returns an error`() {
-        every { userRepository.save(any()) } throws ConstraintViolationException("sql violation", SQLException(), null)
-        val response =
-            service.insertUser(
-                UserRequestDto("constraintViolatingUsername", "password"),
-            )
-        assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+    fun `insert user throws bad request error when user exists`() {
+        every { userRepository.existsById(any()) } returns true
+
+        val exception =
+            assertThrows<ResponseStatusException> {
+                service.insertUser(
+                    UserRequestDto("constraintViolatingUsername", "password"),
+                )
+            }
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
+        assertThat(exception.message).contains("the user already exists")
+
+        verify(inverse = true) { passwordEncoder.encodePassword("password") }
     }
 
     @Test
@@ -202,29 +219,19 @@ class UserServiceTest {
     }
 
     @Test
-    fun `insertUser returns bad request when user exists`() {
-        every { userRepository.existsById(any()) } returns true
-
-        val response =
-            service.insertUser(
-                UserRequestDto("username", "password"),
-            )
-
-        assertThat(response.statusCode).isEqualTo(HttpStatus.BAD_REQUEST)
-        verify(inverse = true) { passwordEncoder.encodePassword("password") }
-    }
-
-    @Test
     fun `update a user that does not exist returns not found response`() {
         every { userRepository.findById(any()) } returns Optional.empty()
-        val response =
-            service.patchUser(
-                "non-exist-user",
-                UserPermissionsPatchRequestDto(
-                    listOf(RoleEntity(RoleType.USER)),
-                ),
-            )
-        assertThat(response.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        val exception =
+            assertThrows<ResponseStatusException> {
+                service.patchUser(
+                    "non-exist-user",
+                    UserPermissionsPatchRequestDto(
+                        listOf(RoleEntity(RoleType.USER)),
+                    ),
+                )
+            }
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        assertThat(exception.message).contains("User was not found")
     }
 
     @Test

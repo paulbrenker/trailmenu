@@ -112,7 +112,7 @@ class UserService {
                 .findById(username)
 
         if (userEntity.isEmpty) {
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "User does not exists")
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User was not found")
         }
 
         val updatedUser =
