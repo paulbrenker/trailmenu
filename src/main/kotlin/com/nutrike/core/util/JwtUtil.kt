@@ -1,8 +1,11 @@
 package com.nutrike.core.util
 
+import com.nutrike.core.exception.InvalidTokenException
 import com.nutrike.core.util.ClockUtil.Companion.tokenExpirationTime
 import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
 import org.springframework.stereotype.Component
 import java.util.Date
 
@@ -11,7 +14,7 @@ class JwtUtil {
     private val secret =
         Jwts.SIG.HS256
             .key()
-            .build() // TODO persist key in Spring env
+            .build()
 
     fun generateToken(
         username: String,
@@ -26,7 +29,7 @@ class JwtUtil {
             .signWith(secret)
             .compact()
 
-    fun validateToken(token: String): Claims? =
+    fun validateToken(token: String): Claims =
         try {
             Jwts
                 .parser()
@@ -34,7 +37,11 @@ class JwtUtil {
                 .build()
                 .parseSignedClaims(token)
                 .payload
+        } catch (e: ExpiredJwtException) {
+            throw InvalidTokenException("Token has expired")
+        } catch (e: MalformedJwtException) {
+            throw InvalidTokenException("Invalid token format")
         } catch (e: Exception) {
-            null
+            throw InvalidTokenException("Token validation failed")
         }
 }
