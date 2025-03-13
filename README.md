@@ -9,6 +9,7 @@ This is the Central Backend Service for the Nutrike Outdoor Recipe Planner
     - [Database](#database)
     - [OpenAPI](#openapi)
     - [Testing](#testing)
+    - [Environment](#local-environment)
 - [Project Management](#project-management)
 
 ## Local Setup
@@ -19,7 +20,11 @@ Install Java version 21 Temurin using sdkman on your machine.
 
 ### Database
 
-To start up the local database docker needs to be installed. Start up database container using `docker compose up -d`
+To start up the local database docker needs to be installed. Start up database container using
+
+```bash
+docker compose up -d
+```
 
 ### OpenAPI
 
@@ -32,6 +37,15 @@ Endpoints and Authentication are documented using OpenAPI and the SwaggerUI.
 
 Tests can be executed using `./gradlew test`. A test coverage limit of 80% is automatically enforced. You can view
 the current coverage report [here](http://localhost:63342/core/build/reports/jacoco/test/html/index.html?).
+
+### Local Environment
+
+To enable jwt tokens to be valid throughout server restarts the application reads a secret from the environment.
+To start up the server locally add a random secret to your `$PATH`.
+
+```bash
+export JWT_SECRET="5pAq6zRyX8bC3dV2wS7gN1mK9jF0hL4tUoP6iBvE3nG8xZaQrY7cW2fA"
+```
 
 ## Project Management
 
