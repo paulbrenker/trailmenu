@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import org.springframework.web.server.ResponseStatusException
 
 @Service
 class UserService {
@@ -38,25 +39,27 @@ class UserService {
                 authRequest.username,
             )
 
-        return if (
-            userEntity != null &&
-            passwordEncoder.verifyPassword(authRequest.password, userEntity.password) &&
-            !userEntity.roles.contains(RoleEntity(RoleType.PENDING))
+        if (
+            userEntity == null ||
+            !passwordEncoder.verifyPassword(authRequest.password, userEntity.password)
         ) {
-            ResponseEntity.ok(
-                UserAuthResponseDto(
-                    jwtUtil.generateToken(
-                        userEntity.username,
-                        userEntity.roles
-                            .map {
-                                it.type.toString()
-                            }.toSet(),
-                    ),
-                ),
-            )
-        } else {
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()
+            throw ResponseStatusException(HttpStatus.UNAUTHORIZED, "username or password invalid")
         }
+        if (userEntity.roles.contains(RoleEntity(RoleType.PENDING))) {
+            throw ResponseStatusException(HttpStatus.FORBIDDEN, "Your account needs approval by an admin")
+        }
+
+        return ResponseEntity.ok(
+            UserAuthResponseDto(
+                jwtUtil.generateToken(
+                    userEntity.username,
+                    userEntity.roles
+                        .map {
+                            it.type.toString()
+                        }.toSet(),
+                ),
+            ),
+        )
     }
 
     @Transactional
@@ -83,23 +86,22 @@ class UserService {
             )
         }
 
-    fun insertUser(userRequestDto: UserRequestDto): ResponseEntity<UserResponseDto> =
-        try {
-            if (userRepository.existsById(userRequestDto.username)) {
-                ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
-            } else {
-                val savedUser =
-                    userRepository.save(
-                        UserEntity(
-                            userRequestDto.username,
-                            passwordEncoder.encodePassword(userRequestDto.password),
-                        ),
-                    )
-                ResponseEntity.ok(entityToResponseDto(savedUser))
-            }
-        } catch (e: Exception) {
-            ResponseEntity.status(HttpStatus.BAD_REQUEST).build()
+    fun insertUser(userRequestDto: UserRequestDto): ResponseEntity<UserResponseDto> {
+        if (userRepository.existsById(userRequestDto.username)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "the user already exists")
         }
+
+        return ResponseEntity.ok(
+            entityToResponseDto(
+                userRepository.save(
+                    UserEntity(
+                        userRequestDto.username,
+                        passwordEncoder.encodePassword(userRequestDto.password),
+                    ),
+                ),
+            ),
+        )
+    }
 
     fun patchUser(
         username: String,
@@ -110,7 +112,7 @@ class UserService {
                 .findById(username)
 
         if (userEntity.isEmpty) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User was not found")
         }
 
         val updatedUser =

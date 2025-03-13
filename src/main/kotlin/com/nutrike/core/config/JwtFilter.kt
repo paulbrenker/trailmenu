@@ -3,6 +3,8 @@ package com.nutrike.core.config
 import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_EXCLUDE
 import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_HEADER
 import com.nutrike.core.config.AuthenticationConfig.Companion.TOKEN_PREFIX
+import com.nutrike.core.config.handler.CustomUnauthorizedHandler.handle
+import com.nutrike.core.exception.InvalidTokenException
 import com.nutrike.core.util.JwtUtil
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
@@ -28,22 +30,26 @@ class JwtFilter(
         response: HttpServletResponse,
         chain: FilterChain,
     ) {
-        val authHeader = request.getHeader(AUTHENTICATION_HEADER)
+        try {
+            val authHeader = request.getHeader(AUTHENTICATION_HEADER)
 
-        if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {
-            val token = authHeader.substring(TOKEN_PREFIX.length)
-            val claims = jwtUtil.validateToken(token)
+            if (authHeader != null && authHeader.startsWith(TOKEN_PREFIX)) {
+                val token = authHeader.substring(TOKEN_PREFIX.length)
+                val claims = jwtUtil.validateToken(token)
 
-            if (claims != null && SecurityContextHolder.getContext().authentication == null) {
-                val username = claims.subject
-                val roles = claims["roles"] as? List<String> ?: emptyList()
-                val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
+                if (SecurityContextHolder.getContext().authentication == null) {
+                    val username = claims.subject
+                    val roles = claims["roles"] as? List<String> ?: emptyList()
+                    val authorities = roles.map { SimpleGrantedAuthority("ROLE_$it") }
 
-                val authentication =
-                    UsernamePasswordAuthenticationToken(username, null, authorities)
-                SecurityContextHolder.getContext().authentication = authentication
+                    val authentication =
+                        UsernamePasswordAuthenticationToken(username, null, authorities)
+                    SecurityContextHolder.getContext().authentication = authentication
+                }
             }
+            chain.doFilter(request, response)
+        } catch (e: InvalidTokenException) {
+            handle(request, response, e)
         }
-        chain.doFilter(request, response)
     }
 }

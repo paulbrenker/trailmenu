@@ -1,6 +1,7 @@
 package com.nutrike.core.config
 
 import com.nutrike.core.config.AuthenticationConfig.Companion.AUTHENTICATION_HEADER
+import com.nutrike.core.exception.InvalidTokenException
 import com.nutrike.core.util.JwtUtil
 import io.jsonwebtoken.Claims
 import io.mockk.every
@@ -83,17 +84,18 @@ class JwtFilterTest {
 
         mockkStatic(SecurityContextHolder::class)
 
-        var claims: Claims? = null
         if (createClaims) {
-            claims =
+            val claims =
                 mockk<Claims>(relaxed = true, relaxUnitFun = true) {
                     every { subject } returns "test-username"
                     every { get("roles", List::class.java) } returns listOf("USER")
                 }
+            every { jwtUtil.validateToken(any()) } returns claims
+        } else {
+            every { jwtUtil.validateToken(any()) } throws InvalidTokenException("test-message")
         }
 
         every { mockRequest.getHeader(AUTHENTICATION_HEADER) } returns authHeader
-        every { jwtUtil.validateToken(any()) } returns claims
         every { SecurityContextHolder.getContext().authentication } returns authentication
 
         if (positiveTestCase) {
