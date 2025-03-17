@@ -1,6 +1,6 @@
-# Nutrike
+# Trailmenu
 
-This is the Central Backend Service for the Nutrike Outdoor Recipe Planner
+This is the Central Backend Service for the Trailmenu Outdoor Recipe Planner
 
 ## Table of Contents
 
