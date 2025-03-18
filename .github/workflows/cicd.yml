@@ -12,7 +12,7 @@ jobs:
     timeout-minutes: 5
     services:
       postgres:
-        image: postgres:15
+        image: postgres:16
         env:
           POSTGRES_DB: nutrike
           POSTGRES_USER: user
@@ -41,6 +41,12 @@ jobs:
           key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             gradle-${{ runner.os }}-
+
+      - name: Set environment variables
+        run: |
+          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/nutrike" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_USERNAME=user" >> $GITHUB_ENV
+          echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
 
       - name: Run Ktlint Check
         run: ./gradlew ktlintCheck
