@@ -1,0 +1,3 @@
+[build]
+builder = "paketobuildpacks/builder:base"
+build.env = { BP_JVM_VERSION = "21" }
