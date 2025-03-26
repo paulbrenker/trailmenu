@@ -4,7 +4,7 @@ services:
     container_name: local_postgres
     restart: always
     environment:
-      POSTGRES_DB: nutrike
+      POSTGRES_DB: trailmenu
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
     ports:
