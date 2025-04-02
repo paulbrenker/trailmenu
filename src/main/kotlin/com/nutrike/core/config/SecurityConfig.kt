@@ -13,20 +13,25 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.web.cors.CorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
     private val jwtFilter: JwtFilter,
     private val accessDeniedHandler: CustomAccessDeniedHandler,
+    private val corsConfigurationSource: CorsConfigurationSource,
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
+            .cors { it.configurationSource(corsConfigurationSource) }
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
-                AUTHENTICATION_EXCLUDE.map { (path, method) -> it.requestMatchers(method, path).permitAll() }
+                AUTHENTICATION_EXCLUDE.map { (path, method) ->
+                    it.requestMatchers(method, path).permitAll()
+                }
                 ADMIN_RIGHTS_REQUIRED.map { (path, method) ->
                     it.requestMatchers(method, path).hasRole(
                         RoleType.ADMIN
