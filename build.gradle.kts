@@ -33,7 +33,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-gson:0.12.6")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5")
     implementation("org.postgresql:postgresql:42.7.5")
-    implementation("org.testcontainers:junit-jupiter:1.20.5")
+    implementation("org.testcontainers:junit-jupiter:1.20.6")
     implementation("org.liquibase:liquibase-core:4.31.1")
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
