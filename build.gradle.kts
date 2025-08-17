@@ -2,9 +2,9 @@ plugins {
     kotlin("jvm") version "2.1.21"
     kotlin("plugin.jpa") version "2.1.21"
     kotlin("plugin.spring") version "2.1.21"
-    id("org.springframework.boot") version "3.5.0"
+    id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
     jacoco
 }
 
@@ -36,7 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.jsonwebtoken:jjwt-api:0.12.6")
     implementation("io.jsonwebtoken:jjwt-gson:0.12.6")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.8")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
     implementation("org.postgresql:postgresql:42.7.5")
     implementation("org.testcontainers:junit-jupiter:1.21.3")
     implementation("org.liquibase:liquibase-core:4.31.1")
