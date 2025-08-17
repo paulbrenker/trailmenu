@@ -4,7 +4,7 @@ plugins {
     kotlin("plugin.spring") version "2.1.21"
     id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
-    id("org.jlleitschuh.gradle.ktlint") version "12.2.0"
+    id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
     jacoco
 }
 
