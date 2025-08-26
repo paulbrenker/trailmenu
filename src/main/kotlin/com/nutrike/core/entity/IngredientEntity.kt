@@ -8,6 +8,7 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
+import java.math.BigDecimal
 import java.util.UUID
 
 @Entity
@@ -23,13 +24,13 @@ data class IngredientEntity(
     @Column(nullable = false, length = 2, name = "measure")
     val measure: Measure,
     @Column(nullable = false, name = "calories")
-    val calories: Float,
+    val calories: BigDecimal,
     @Column(nullable = false, name = "carbs")
-    val carbs: Float,
+    val carbs: BigDecimal,
     @Column(nullable = false, name = "protein")
-    val protein: Float,
+    val protein: BigDecimal,
     @Column(nullable = false, name = "sugar")
-    val sugar: Float,
+    val sugar: BigDecimal,
     @Column(nullable = false, name = "fat")
-    val fat: Float,
+    val fat: BigDecimal,
 )
