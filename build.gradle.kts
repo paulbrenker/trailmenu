@@ -1,7 +1,7 @@
 plugins {
-    kotlin("jvm") version "2.1.21"
-    kotlin("plugin.jpa") version "2.1.21"
-    kotlin("plugin.spring") version "2.1.21"
+    kotlin("jvm") version "2.2.10"
+    kotlin("plugin.jpa") version "2.2.10"
+    kotlin("plugin.spring") version "2.2.10"
     id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
     id("org.jlleitschuh.gradle.ktlint") version "13.0.0"
@@ -34,18 +34,18 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
-    implementation("io.jsonwebtoken:jjwt-gson:0.12.6")
+    implementation("io.jsonwebtoken:jjwt-api:0.12.7")
+    implementation("io.jsonwebtoken:jjwt-gson:0.12.7")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
-    implementation("org.postgresql:postgresql:42.7.5")
+    implementation("org.postgresql:postgresql:42.7.7")
     implementation("org.testcontainers:junit-jupiter:1.21.3")
     implementation("org.liquibase:liquibase-core:4.31.1")
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.7")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.1")
-    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testImplementation("io.mockk:mockk:1.14.5")
     testImplementation("org.testcontainers:testcontainers:1.21.3")
     testImplementation("org.testcontainers:postgresql:1.21.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
