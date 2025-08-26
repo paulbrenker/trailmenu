@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm") version "2.2.10"
-    kotlin("plugin.jpa") version "2.1.21"
+    kotlin("plugin.jpa") version "2.2.10"
     kotlin("plugin.spring") version "2.1.21"
     id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
@@ -44,8 +44,8 @@ dependencies {
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.7")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.13.1")
-    testImplementation("io.mockk:mockk:1.14.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
+    testImplementation("io.mockk:mockk:1.14.5")
     testImplementation("org.testcontainers:testcontainers:1.21.3")
     testImplementation("org.testcontainers:postgresql:1.21.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
