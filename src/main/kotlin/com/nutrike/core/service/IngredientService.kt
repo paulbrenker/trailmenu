@@ -1,5 +1,6 @@
 package com.nutrike.core.service
 
+import com.nutrike.core.dto.IngredientRequestDto
 import com.nutrike.core.dto.IngredientResponseDto
 import com.nutrike.core.dto.PageDto
 import com.nutrike.core.dto.PageInfoDto
@@ -43,6 +44,23 @@ class IngredientService {
                     ),
                 )
             }
+
+    fun insertIngredient(ingredientRequest: IngredientRequestDto): ResponseEntity<IngredientResponseDto> =
+        ResponseEntity.ok(
+            ingredientEntityToResponseDto(
+                ingredientRepository.save(
+                    IngredientEntity(
+                        name = ingredientRequest.name,
+                        measure = ingredientRequest.measure,
+                        calories = ingredientRequest.calories,
+                        carbs = ingredientRequest.carbs,
+                        protein = ingredientRequest.protein,
+                        sugar = ingredientRequest.sugar,
+                        fat = ingredientRequest.fat,
+                    ),
+                ),
+            ),
+        )
 
     private fun ingredientEntityToResponseDto(ingredientEntity: IngredientEntity) =
         IngredientResponseDto(

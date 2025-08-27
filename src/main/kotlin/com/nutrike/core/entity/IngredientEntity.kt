@@ -17,7 +17,7 @@ data class IngredientEntity(
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID?,
+    val id: UUID? = null,
     @Column(nullable = false, length = 255, name = "name")
     val name: String,
     @Enumerated(EnumType.STRING)
