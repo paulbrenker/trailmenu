@@ -77,6 +77,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::360212038017:role/GitHubActionsReadDbSecret
           aws-region: eu-central-1
+          audience: sts.amazonaws.com
           retry-max-attempts: 3
 
       - name: Verify AWS identity
@@ -92,9 +93,5 @@ jobs:
 
           echo "SPRING_DATASOURCE_USERNAME=$(echo $SECRET | jq -r .username)" >> $GITHUB_ENV
           echo "SPRING_DATASOURCE_PASSWORD=$(echo $SECRET | jq -r .password)" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://$(echo $SECRET | jq -r .host):$(echo $SECRET | jq -r .port)/$(echo $SECRET | jq -r .dbname)" >> $GITHUB_ENV
-
-      - name: Verify env variables
-        run: |
-          echo "URL=$SPRING_DATASOURCE_URL"
-          echo "USER=$SPRING_DATASOURCE_USERNAME"
+          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://trailmenu-db.cvqmwiaii8u9.eu-central-1.rds.amazonaws
+          .com:5432/trailmenu-db >> $GITHUB_ENV
