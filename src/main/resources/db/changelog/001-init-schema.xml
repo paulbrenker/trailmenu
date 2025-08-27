@@ -71,4 +71,17 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
             );
         </sql>
     </changeSet>
+    <changeSet id="002-creator-timestamps" author="paulbrenker">
+        <sql>
+            ALTER TABLE recipe
+                ADD COLUMN added_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                ADD COLUMN creator VARCHAR(150) NOT NULL;
+
+            ALTER TABLE recipe
+                ADD CONSTRAINT fk_recipe_creator FOREIGN KEY (creator) REFERENCES users (username);
+
+            ALTER TABLE users
+                ADD COLUMN added_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
 </databaseChangeLog>
