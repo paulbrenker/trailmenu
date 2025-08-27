@@ -3,7 +3,6 @@ package com.nutrike.core.controller
 import com.nutrike.core.dto.IngredientRequestDto
 import com.nutrike.core.dto.IngredientResponseDto
 import com.nutrike.core.dto.PageDto
-import com.nutrike.core.dto.UserRequestDto
 import com.nutrike.core.service.IngredientService
 import com.nutrike.core.util.ValidCursor
 import io.swagger.v3.oas.annotations.Operation

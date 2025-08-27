@@ -1,6 +1,5 @@
 package com.nutrike.core.repo
 
-import com.nutrike.core.entity.RoleType
 import com.nutrike.core.util.CursorUtil
 import jakarta.persistence.criteria.CriteriaBuilder
 import jakarta.persistence.criteria.CriteriaQuery
