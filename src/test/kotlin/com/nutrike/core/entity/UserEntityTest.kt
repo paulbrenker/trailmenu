@@ -2,13 +2,8 @@ package com.nutrike.core.entity
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.validation.annotation.Validated
+import java.time.LocalDateTime
 
-@SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@Validated
 class UserEntityTest {
     @Test
     fun `new user default parameters are set`() {
@@ -18,5 +13,7 @@ class UserEntityTest {
         assertThat(user.password).isEqualTo(user.password)
         assertThat(user.roles).hasSize(1)
         assertThat(user.roles).containsOnly(RoleEntity(type = RoleType.PENDING))
+        assertThat(user.addedDate.toLocalDateTime())
+            .isAfter(LocalDateTime.now().minusSeconds(1))
     }
 }

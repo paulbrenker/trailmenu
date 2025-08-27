@@ -66,7 +66,12 @@ class UserServiceTest {
 
         every {
             userRepository.findUserEntityByUsername(existUsername)
-        } returns UserEntity("existent", "12345", setOf(RoleEntity(RoleType.USER)))
+        } returns
+            UserEntity(
+                username = "existent",
+                password = "12345",
+                roles = setOf(RoleEntity(RoleType.USER)),
+            )
         every {
             passwordEncoder.verifyPassword(nonMatchingPassword, "12345")
         } returns false
@@ -92,7 +97,12 @@ class UserServiceTest {
 
         every {
             userRepository.findUserEntityByUsername(existUsername)
-        } returns UserEntity("existent", "1234", setOf(RoleEntity(RoleType.PENDING)))
+        } returns
+            UserEntity(
+                username = "existent",
+                password = "1234",
+                roles = setOf(RoleEntity(RoleType.PENDING)),
+            )
         every {
             passwordEncoder.verifyPassword(nonMatchingPassword, "1234")
         } returns true

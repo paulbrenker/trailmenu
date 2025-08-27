@@ -39,4 +39,58 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
                    ('ADMIN');
         </sql>
     </changeSet>
+    <changeSet id="002-recipes" author="paulbrenker">
+        <sql>
+            CREATE TABLE ingredient
+            (
+                id       UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                name     VARCHAR(255) NOT NULL,
+                measure  VARCHAR(2)   NOT NULL CHECK (measure IN ('ML', 'GR')),
+                calories DECIMAL      NOT NULL,
+                carbs    DECIMAL      NOT NULL,
+                protein  DECIMAL      NOT NULL,
+                sugar    DECIMAL      NOT NULL,
+                fat      DECIMAL      NOT NULL
+            );
+            CREATE TABLE recipe
+            (
+                id           UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                name         VARCHAR(255) NOT NULL,
+                type         VARCHAR(16)  NOT NULL CHECK (type IN ('BREAKFAST', 'LUNCH', 'DINNER', 'SNACK')),
+                instructions TEXT         NOT NULL
+            );
+            CREATE TABLE recipe_ingredients
+            (
+                recipe_id              UUID        NOT NULL,
+                ingredient_id          UUID        NOT NULL,
+                multiplier             INTEGER     NOT NULL,
+                multiplier_description VARCHAR(32) NOT NULL,
+                CONSTRAINT fk_recipe_id FOREIGN KEY (recipe_id) REFERENCES recipe (id),
+                CONSTRAINT fk_ingredient_id FOREIGN KEY (ingredient_id) REFERENCES ingredient (id),
+                CONSTRAINT unique_recipe_ingredient UNIQUE (recipe_id, ingredient_id)
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="002-creator-timestamps" author="paulbrenker">
+        <sql>
+            ALTER TABLE recipe
+                ADD COLUMN added_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                ADD COLUMN creator VARCHAR(150) NOT NULL;
+
+            ALTER TABLE recipe
+                ADD CONSTRAINT fk_recipe_creator FOREIGN KEY (creator) REFERENCES users (username);
+
+            ALTER TABLE users
+                ADD COLUMN added_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
+        </sql>
+    </changeSet>
+    <changeSet id="003-unique-names" author="paulbrenker">
+        <sql>
+            ALTER TABLE ingredient
+                ADD CONSTRAINT unique_ingredient_name UNIQUE (name);
+
+            ALTER TABLE recipe
+                ADD CONSTRAINT unique_recipe_name UNIQUE (name);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
