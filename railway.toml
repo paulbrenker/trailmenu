@@ -1,2 +1,0 @@
-[build]
-build.env = { BP_JVM_VERSION = "21", BP_GRADLE_VERSION = "8" }
