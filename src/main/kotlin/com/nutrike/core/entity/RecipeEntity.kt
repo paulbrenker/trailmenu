@@ -22,7 +22,7 @@ data class RecipeEntity(
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.UUID)
     val id: UUID? = null,
-    @Column(nullable = false, length = 255, name = "name")
+    @Column(nullable = false, unique = true, length = 255, name = "name")
     val name: String,
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16, name = "type")

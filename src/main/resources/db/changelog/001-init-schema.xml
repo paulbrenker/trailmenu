@@ -84,4 +84,13 @@ http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.8.xsd">
                 ADD COLUMN added_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP;
         </sql>
     </changeSet>
+    <changeSet id="003-unique-names" author="paulbrenker">
+        <sql>
+            ALTER TABLE ingredient
+                ADD CONSTRAINT unique_ingredient_name UNIQUE (name);
+
+            ALTER TABLE recipe
+                ADD CONSTRAINT unique_recipe_name UNIQUE (name);
+        </sql>
+    </changeSet>
 </databaseChangeLog>
