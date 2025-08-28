@@ -90,4 +90,4 @@ jobs:
         run: |
           IMAGE_URI=360212038017.dkr.ecr.eu-central-1.amazonaws.com/trailmenu:latest
           docker build -t $IMAGE_URI .
-          docker push $IMAGE_URI.ecr.eu-central-1.amazonaws.com/trailmenu:latest .
+          docker push $IMAGE_URI
