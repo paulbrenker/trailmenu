@@ -25,6 +25,11 @@ To start up the local database docker needs to be installed. Start up database c
 docker compose up -d postgres
 ```
 
+### Run App
+
+for development purposes it is recommended to run the application via `./gradlew bootRun` or via the IDE.
+Alternatively you can build and run the app and the database using docker: `docker compose up --build`.
+
 ### OpenAPI
 
 Endpoints and Authentication are documented using OpenAPI and the SwaggerUI.
