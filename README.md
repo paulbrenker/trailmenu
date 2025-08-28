@@ -22,7 +22,7 @@ Install Java version 21 Temurin using sdkman on your machine.
 To start up the local database docker needs to be installed. Start up database container using
 
 ```bash
-docker compose up -d
+docker compose up -d postgres
 ```
 
 ### OpenAPI
