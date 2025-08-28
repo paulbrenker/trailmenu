@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: nutrike
+          POSTGRES_DB: trailmenu
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
         ports:
@@ -42,11 +42,11 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      - name: Set environment variables
-        run: |
-          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/nutrike" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_USERNAME=user" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
+      #      - name: Set environment variables
+      #        run: |
+      #          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/trailmenu" >> $GITHUB_ENV
+      #          echo "SPRING_DATASOURCE_USERNAME=user" >> $GITHUB_ENV
+      #          echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
 
       - name: Run Ktlint Check
         run: ./gradlew ktlintCheck
