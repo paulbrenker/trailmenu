@@ -76,6 +76,18 @@ jobs:
           name: app-jar
           path: build/libs
 
-      - name: Build Docker Image
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::360212038017:role/GitHubActionsECRRole
+          retry-max-attempts: 3
+          aws-region: eu-central-1
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, Tag, and Push Docker image
         run: |
-          docker build -t 360212038017.dkr.ecr.eu-central-1.amazonaws.com/trailmenu:latest .
+          IMAGE_URI=360212038017.dkr.ecr.eu-central-1.amazonaws.com/trailmenu:latest
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI.ecr.eu-central-1.amazonaws.com/trailmenu:latest .
