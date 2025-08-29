@@ -14,7 +14,7 @@ jobs:
       postgres:
         image: postgres:16
         env:
-          POSTGRES_DB: nutrike
+          POSTGRES_DB: trailmenu
           POSTGRES_USER: user
           POSTGRES_PASSWORD: password
         ports:
@@ -42,12 +42,6 @@ jobs:
           restore-keys: |
             gradle-${{ runner.os }}-
 
-      - name: Set environment variables
-        run: |
-          echo "SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/nutrike" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_USERNAME=user" >> $GITHUB_ENV
-          echo "SPRING_DATASOURCE_PASSWORD=password" >> $GITHUB_ENV
-
       - name: Run Ktlint Check
         run: ./gradlew ktlintCheck
 
@@ -55,4 +49,45 @@ jobs:
         run: ./gradlew test
 
       - name: Build Application
-        run: ./gradlew test
+        run: ./gradlew build
+
+      - name: Upload JAR as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-jar
+          path: build/libs/*.jar
+
+#  deploy: # disabled as AWS is too expensive
+#    name: Deploy to AWS
+#    runs-on: ubuntu-latest
+#    needs: build
+#    timeout-minutes: 10
+#    permissions:
+#      id-token: write
+#      contents: read
+#
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v5
+#
+#      - name: Download JAR from build job
+#        uses: actions/download-artifact@v4
+#        with:
+#          name: app-jar
+#          path: build/libs
+#
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v4
+#        with:
+#          role-to-assume: arn:aws:iam::360212038017:role/GitHubActionsECRRole
+#          retry-max-attempts: 3
+#          aws-region: eu-central-1
+#
+#      - name: Login to Amazon ECR
+#        uses: aws-actions/amazon-ecr-login@v2
+#
+#      - name: Build, Tag, and Push Docker image
+#        run: |
+#          IMAGE_URI=360212038017.dkr.ecr.eu-central-1.amazonaws.com/trailmenu:latest
+#          docker build -t $IMAGE_URI .
+#          docker push $IMAGE_URI

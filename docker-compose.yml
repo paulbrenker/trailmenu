@@ -12,5 +12,15 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
+  trailmenu:
+    build: .
+    container_name: trailmenu
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/trailmenu
+    depends_on:
+      - postgres
+
 volumes:
   postgres_data:
