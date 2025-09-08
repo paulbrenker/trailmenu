@@ -127,6 +127,7 @@ class UserService {
     private fun entityToResponseDto(entity: UserEntity) =
         UserResponseDto(
             entity.username,
+            entity.addedDate,
             entity.roles,
         )
 }
