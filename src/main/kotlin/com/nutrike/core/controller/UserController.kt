@@ -98,7 +98,7 @@ class UserController {
 
     @Operation(
         summary = "Delete a user",
-        description = "Delete a from the database.",
+        description = "Delete a from the database. Endpoint requires admin permission",
     )
     @DeleteMapping("/{username}")
     fun deleteUser(
