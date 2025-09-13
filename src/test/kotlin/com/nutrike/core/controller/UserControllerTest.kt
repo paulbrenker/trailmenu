@@ -21,6 +21,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import java.sql.Timestamp
+import java.time.LocalDateTime
 import java.util.stream.Stream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -123,6 +125,7 @@ class UserControllerTest {
         val responseDto =
             UserResponseDto(
                 "test-user",
+                Timestamp.valueOf(LocalDateTime.now()),
                 setOf(RoleEntity(RoleType.USER)),
             )
         every { userService.insertUser(any()) } returns ResponseEntity.ok(responseDto)
