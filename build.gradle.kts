@@ -36,7 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     implementation("io.jsonwebtoken:jjwt-gson:0.13.0")
-    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     implementation("org.postgresql:postgresql:42.7.7")
     implementation("org.testcontainers:junit-jupiter:1.21.3")
     implementation("org.liquibase:liquibase-core:4.33.0")
