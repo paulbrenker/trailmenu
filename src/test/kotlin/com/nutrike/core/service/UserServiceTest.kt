@@ -263,4 +263,27 @@ class UserServiceTest {
             )
         assertThat(response.statusCode).isEqualTo(HttpStatus.OK)
     }
+
+    @Test
+    fun `deleteUser returns ok if user existed in database`() {
+        val testUserName = "test-user"
+
+        every { userRepository.existsById(testUserName) } returns true
+        every { userRepository.deleteById(testUserName) } returns Unit
+
+        val response = service.deleteUser(testUserName)
+
+        assertThat(response.statusCode).isEqualTo(HttpStatus.NO_CONTENT)
+    }
+
+    @Test
+    fun `deleteUser returns not found if user did not exist in database`() {
+        val testUserName = "non-existent-test-user"
+
+        every { userRepository.existsById(testUserName) } returns false
+
+        val exception = assertThrows<ResponseStatusException> { service.deleteUser(testUserName) }
+        assertThat(exception.statusCode).isEqualTo(HttpStatus.NOT_FOUND)
+        assertThat(exception.message).contains("User was not found")
+    }
 }
