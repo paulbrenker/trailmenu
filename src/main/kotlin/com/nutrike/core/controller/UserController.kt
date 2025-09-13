@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -94,4 +95,13 @@ class UserController {
         @Valid @PathVariable username: String,
         @Valid @RequestBody userUpdate: UserPermissionsPatchRequestDto,
     ): ResponseEntity<UserResponseDto> = service.patchUser(username, userUpdate)
+
+    @Operation(
+        summary = "Delete a user",
+        description = "Delete a from the database. Endpoint requires admin permission",
+    )
+    @DeleteMapping("/{username}")
+    fun deleteUser(
+        @Valid @PathVariable username: String,
+    ): ResponseEntity<Void> = service.deleteUser(username)
 }

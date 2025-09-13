@@ -124,6 +124,16 @@ class UserService {
         return ResponseEntity.ok(entityToResponseDto(savedUser))
     }
 
+    fun deleteUser(username: String): ResponseEntity<Void> {
+        val userExists = userRepository.existsById(username)
+
+        if (!userExists) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND, "User was not found")
+        }
+        userRepository.deleteById(username)
+        return ResponseEntity.noContent().build()
+    }
+
     private fun entityToResponseDto(entity: UserEntity) =
         UserResponseDto(
             entity.username,
