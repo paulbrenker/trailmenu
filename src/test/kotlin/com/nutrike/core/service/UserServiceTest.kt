@@ -21,6 +21,8 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
+import java.sql.Timestamp
+import java.time.LocalDateTime
 import java.util.Optional
 
 @ExtendWith(MockKExtension::class)
@@ -173,6 +175,7 @@ class UserServiceTest {
     @Test
     fun `find all users returns ok if at least one user is in db`() {
         val mockPage = mockk<Page<UserEntity>>(relaxed = true)
+        val mockNow = Timestamp.valueOf(LocalDateTime.now())
 
         every { userRepository.findAll(any(), Pageable.ofSize(10)) } returns mockPage
         every { userRepository.count() } returns 1
@@ -180,7 +183,7 @@ class UserServiceTest {
         every { mockPage.hasNext() } returns false
         every { mockPage.content } returns
             listOf(
-                UserEntity("username", "password"),
+                UserEntity("username", "password", mockNow),
             )
 
         val response = service.findAllUsers(null, 10, null)
@@ -189,6 +192,7 @@ class UserServiceTest {
         assertThat(response.body!!.data).containsExactly(
             UserResponseDto(
                 "username",
+                mockNow,
                 setOf(RoleEntity(RoleType.PENDING)),
             ),
         )
