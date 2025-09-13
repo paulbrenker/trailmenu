@@ -17,6 +17,7 @@ class AuthenticationConfig {
             mapOf(
                 "/user/{username}/approval" to HttpMethod.PUT,
                 "/user" to HttpMethod.GET,
+                "/user/{username}" to HttpMethod.DELETE,
             )
         const val TOKEN_PREFIX = "Bearer "
         const val AUTHENTICATION_HEADER = "Authorization"
