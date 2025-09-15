@@ -16,9 +16,9 @@ class OpenApiConfig {
         OpenAPI()
             .info(
                 Info()
-                    .title("Nutrike API Documentation")
+                    .title("Trailmenu API Documentation")
                     .version("1.0")
-                    .description("API documentation for the Nutrike Backend Rest API")
+                    .description("API documentation for the Trailmenu Backend Rest API")
                     .contact(Contact().name("Paul Brenker").email("paul.brenker@gmail.com")),
             ).addSecurityItem(SecurityRequirement().addList("BearerAuth"))
             .components(
