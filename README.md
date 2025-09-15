@@ -1,48 +1,68 @@
-# Nutrike
+# Trailmenu
 
-This is the Central Backend Service for the Nutrike Outdoor Recipe Planner
+Trailmenu is the **central backend service** for the **Trailmenu** Outdoor Meal Planner.
+It provides HTTP REST endpoints for core functionallity, along with built-in user and authentication management.
 
-## Table of Contents
+![Swagger UI](img/swagger-ui.png)
 
-- [Local Setup](#local-setup)
-    - [Java Version](#java-version)
-    - [Database](#database)
-    - [OpenAPI](#openapi)
-    - [Testing](#testing)
-- [Project Management](#project-management)
+---
 
-## Local Setup
+## 📑 Table of Contents
 
-### Java Version
+- [Getting Started](#-getting-started)
+- [Database](#database)
+- [Run the App](#run-the-app)
+- [OpenAPI](#openapi)
+- [Testing](#testing)
 
-Install Java version 21 Temurin using sdkman on your machine.
+---
 
-### Database
+## 🚀 Getting Started
 
-To start up the local database docker needs to be installed. Start up database container using
+This project requires **Java 21 (Temurin distribution)**.  
+We recommend installing it via [SDKMAN](https://sdkman.io/):
+
+```bash
+sdk install java 21-tem
+```
+
+## Database
+
+A local PostgreSQL instance is required. You can start it with Docker:
 
 ```bash
 docker compose up -d postgres
 ```
 
-### Run App
+## Run the app
 
-for development purposes it is recommended to run the application via `./gradlew bootRun` or via the IDE.
-Alternatively you can build and run the app and the database using docker: `docker compose up --build`.
+For development purposes, run the application using:
+
+```bash
+./gradlew bootRun
+```
+
+Alternatively, you can build and run the full stack (app + database) with Docker:
+
+```bash
+docker compose up --build```
+```
 
 ### OpenAPI
 
-Endpoints and Authentication are documented using OpenAPI and the SwaggerUI.
+API endpoints and authentication are documented via OpenAPI & Swagger UI.
 
-- [SwaggerUI](http://127.0.0.1:8080/swagger-ui/index.html#/)
-- [ApiDocs](http://127.0.0.1:8080/v3/api-docs)
+- [Localhost](http://127.0.0.1:8080/swagger-ui/index.html#/)
+- [Production](https://api.pbrenk.com/swagger-ui/index.html#/)
 
 ### Testing
 
-Tests can be executed using `./gradlew test`. A test coverage limit of 80% is automatically enforced. You can view
-the current coverage report [here](http://localhost:63342/core/build/reports/jacoco/test/html/index.html?).
+Run tests with:
 
-## Project Management
+```bash
+./gradlew test
+```
 
-Storys and Tasks for this Project are managed in a related GitHub Project
-see [here](https://github.com/users/paulbrenker/projects/5/views/1).
+- Test coverage is automatically **enforced at 80%.**
+- Coverage reports can be found
+  here: [Jacoco Report](http://localhost:63342/core/build/reports/jacoco/test/html/index.html?) .
