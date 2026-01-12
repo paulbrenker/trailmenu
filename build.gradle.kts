@@ -38,7 +38,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-gson:0.13.0")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.13")
     implementation("org.postgresql:postgresql:42.7.8")
-    implementation("org.testcontainers:junit-jupiter:1.21.3")
+    implementation("org.testcontainers:junit-jupiter:2.0.3")
     implementation("org.liquibase:liquibase-core:4.33.0")
     implementation("jakarta.validation:jakarta.validation-api:3.1.1")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
@@ -46,8 +46,8 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.junit.jupiter:junit-jupiter:5.13.4")
     testImplementation("io.mockk:mockk:1.14.6")
-    testImplementation("org.testcontainers:testcontainers:1.21.3")
-    testImplementation("org.testcontainers:postgresql:1.21.3")
+    testImplementation("org.testcontainers:testcontainers:2.0.3")
+    testImplementation("org.testcontainers:postgresql:2.0.3")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
